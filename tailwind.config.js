@@ -5,15 +5,18 @@ module.exports = {
   darkMode: ["class"],
   safelist: ["dark"],
   prefix: "",
-  
+
   content: [
     "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
     "./storage/framework/views/*.php",
     "./resources/views/**/*.blade.php",
     "./resources/js/**/*.{js,jsx,vue}",
   ],
-  
+
   theme: {
+    fontFamily :{
+      sans : ['Vazirmatn RD UI FD NL'],
+    },
     container: {
       center: true,
       padding: "2rem",
