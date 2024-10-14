@@ -15,7 +15,7 @@ module.exports = {
 
   theme: {
     fontFamily :{
-      sans : ['Vazirmatn RD UI FD NL'],
+      sans : ['Estedad', 'system-ui', 'sans-serif'],
     },
     container: {
       center: true,

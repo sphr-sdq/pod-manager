@@ -1,5 +1,5 @@
 <script setup lang="js">
-import UserAuthForm from './components/UserAuthForm.vue'
+import UserRegisterForm from './components/UserRegisterForm.vue'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/Components/ui/button'
 </script>
@@ -11,13 +11,13 @@ import { buttonVariants } from '@/Components/ui/button'
             <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                 <div class="flex flex-col space-y-2 text-center">
                     <h1 class="text-2xl font-semibold tracking-tight">
-                        ورود به حساب کاربری
+                        ایجاد حساب کاربری
                     </h1>
                     <p class="text-sm text-muted-foreground">
-                        برای ورود شماه همراه و پسورد خود را وارد کنید
+                        برای ایجاد حساب کاربری مراحل زیر را طی نمایید
                     </p>
                 </div>
-                <UserAuthForm />
+                <UserRegisterForm />
 
             </div>
         </div>
@@ -53,15 +53,19 @@ import { buttonVariants } from '@/Components/ui/button'
             </div>
         </div>
     </div>
-<!--    <div class="md:hidden">-->
-<!--        <img-->
-<!--            alt="Authentication"-->
-<!--            width="1280"-->
-<!--            height="1214" class="block" :src="{-->
-<!--        dark: '/examples/authentication-dark.png',-->
-<!--        light: '/examples/authentication-light.png',-->
-<!--      }"-->
-<!--        />-->
-<!--    </div>-->
+    <!--    <div class="md:hidden">-->
+    <!--        <img-->
+    <!--            alt="Authentication"-->
+    <!--            width="1280"-->
+    <!--            height="1214" class="block" :src="{-->
+    <!--        dark: '/examples/authentication-dark.png',-->
+    <!--        light: '/examples/authentication-light.png',-->
+    <!--      }"-->
+    <!--        />-->
+    <!--    </div>-->
 
 </template>
+
+<style scoped>
+
+</style>

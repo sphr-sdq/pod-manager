@@ -24,22 +24,37 @@ async function onSubmit(event) {
         <form @submit="onSubmit">
             <div class="grid gap-2">
                 <div class="grid gap-1">
-                    <Label class="sr-only" for="email">
-                        Email
+                    <Label class="" for="email">
+                        شماه همراه
                     </Label>
                     <Input
                         id="email"
-                        placeholder="name@example.com"
-                        type="email"
+                        placeholder=""
+                        type="tel"
                         auto-capitalize="none"
                         auto-complete="email"
                         auto-correct="off"
                         :disabled="isLoading"
+                        dir="ltr"
+                    />
+                </div>
+                <div class="grid gap-1">
+                    <Label class="" for="email">
+                        رمز عبور
+                    </Label>
+                    <Input
+                        id="email"
+                        placeholder=""
+                        type="password"
+                        auto-capitalize="none"
+                        auto-correct="off"
+                        :disabled="isLoading"
+                        dir="ltr"
                     />
                 </div>
                 <Button :disabled="isLoading">
                     <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-                    Sign In with Email
+                    ورود
                 </Button>
             </div>
         </form>
@@ -49,14 +64,29 @@ async function onSubmit(event) {
             </div>
             <div class="relative flex justify-center text-xs uppercase">
         <span class="bg-background px-2 text-muted-foreground">
-          Or continue with
+          و یا
         </span>
             </div>
         </div>
-        <Button variant="outline" type="button" :disabled="isLoading">
-            <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-            <GitHubLogo v-else class="mr-2 h-4 w-4" />
-            GitHub
-        </Button>
+        <p class="px-8 text-center text-sm text-muted-foreground">
+            در صورتی که رمز عبور خود را فراموش کرده‌اید برای ورود با رمز یکبار مصرف
+            <a
+                href="/terms"
+                class="underline underline-offset-4 hover:text-primary"
+            >
+                اینجا کلیک کنید.
+            </a>
+
+        </p>
+        <p class="px-8 text-center text-sm text-muted-foreground">
+             هنوز اکانت ندارید ؟ برای ساخت اکانت
+            <a
+                href="/terms"
+                class="underline underline-offset-4 hover:text-primary"
+            >
+               کلیک
+            </a>
+            کنید.
+        </p>
     </div>
 </template>
