@@ -1,5 +1,5 @@
 <template>
-    <div class="relative w-[500px] h-[500px] overflow-hidden bg-white rounded-3xl">
+    <div class="relative w-[500px] h-[500px] overflow-hidden bg-[#23211f]">
         <canvas
             ref="canvasRef"
             class="absolute top-0 left-0 w-full h-full"
@@ -31,8 +31,8 @@ export default {
             minSpeed: 0.5,
             maxSpeed: 2,
             // Color parameters
-            baseHue: Math.random() * 360,  // Base hue for the color scheme
-            saturation: 70,
+            baseHue: 30,  // Base hue for the color scheme
+            saturation: 6,
             minLightness: 20,
             maxLightness: 40,
             // Blur amount
@@ -72,7 +72,7 @@ export default {
 
             const animate = () => {
                 // Create a semi-transparent background for trailing effect
-                ctx.fillStyle = `rgba(255, 255, 255, ${params.fadeAlpha})`;
+                ctx.fillStyle = `rgba(35, 33, 31, ${params.fadeAlpha})`;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 balls.forEach(ball => {

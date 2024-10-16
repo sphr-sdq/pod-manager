@@ -11,7 +11,6 @@ import DemoDrawer from './components/DemoDrawer.vue'
                 class="absolute top-0 w-[1000px] z-10 h-[400px] left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.15] pointer-events-none"
                 style="background-image: radial-gradient(#a4a4a3, transparent 50%)"
             />
-<!--            <BackgroundTexture />-->
             <div class="max-w-2xl mx-auto text-center pt-64">
                 <div class="flex flex-col relative">
                     <h1 class="text-7xl font-semibold mb-4 relative">

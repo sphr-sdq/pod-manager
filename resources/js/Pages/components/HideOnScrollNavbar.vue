@@ -1,16 +1,92 @@
 <template>
-    <nav :class="{ 'nav-hidden': !showNavbar, 'nav-visible': showNavbar }">
-        <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+    <nav class="bg-black/40 fixed w-full duration-150  translate-x-1/2"
+         :class="{ 'nav-hidden': !showNavbar, 'nav-visible': showNavbar }">
+        <div class="container grid grid-cols-12 p-10">
+            <div class="col-span-4 bg-blue-600"></div>
+            <div class="bg-red-600 col-span-4">
+                <NavigationMenu>
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                                <ul class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                    <li v-for="component in components" :key="component.title">
+                                        <NavigationMenuLink as-child>
+                                            <a
+                                                :href="component.href"
+                                                class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                            >
+                                                <div class="text-sm font-medium leading-none">{{
+                                                        component.title
+                                                    }}
+                                                </div>
+                                                <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                                    {{ component.description }}
+                                                </p>
+                                            </a>
+                                        </NavigationMenuLink>
+                                    </li>
+                                </ul>
+                            </NavigationMenuContent>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
+            </div>
+            <div class="col-span-4 bg-green-700">hi</div>
+
+        </div>
     </nav>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import {ref, onMounted, onBeforeUnmount} from 'vue'
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu'
+
+const components = [
+    {
+        title: 'Alert Dialog',
+        href: '/docs/components/alert-dialog',
+        description:
+            'A modal dialog that interrupts the user with important content and expects a response.',
+    },
+    {
+        title: 'Hover Card',
+        href: '/docs/components/hover-card',
+        description:
+            'For sighted users to preview content available behind a link.',
+    },
+    {
+        title: 'Progress',
+        href: '/docs/components/progress',
+        description:
+            'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
+    },
+    {
+        title: 'Scroll-area',
+        href: '/docs/components/scroll-area',
+        description: 'Visually or semantically separates content.',
+    },
+    {
+        title: 'Tabs',
+        href: '/docs/components/tabs',
+        description:
+            'A set of layered sections of content—known as tab panels—that are displayed one at a time.',
+    },
+    {
+        title: 'Tooltip',
+        href: '/docs/components/tooltip',
+        description:
+            'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
+    },
+]
 
 const showNavbar = ref(true)
 const lastScrollPosition = ref(0)
@@ -37,14 +113,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #42b883;
-    transition: transform 0.3s ease-in-out;
-}
+
 
 .nav-hidden {
     transform: translateY(-100%);
@@ -54,16 +123,5 @@ nav {
     transform: translateY(0);
 }
 
-ul {
-    display: flex;
-    justify-content: space-around;
-    list-style-type: none;
-    padding: 1rem 0;
-    margin: 0;
-}
 
-a {
-    color: white;
-    text-decoration: none;
-}
 </style>
