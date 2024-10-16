@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from "vue";
-import { StepperItem, useForwardProps } from "radix-vue";
+import { cn } from '@/lib/utils';
+import { StepperItem, useForwardProps } from 'radix-vue';
 
-import { cn } from "@/lib/utils";
+import { computed } from 'vue';
 
 const props = defineProps({
   step: { type: Number, required: true },
@@ -24,7 +24,6 @@ const forwarded = useForwardProps(delegatedProps);
 
 <template>
   <StepperItem
-
     v-slot="slotProps"
     v-bind="forwarded"
     :class="

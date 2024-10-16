@@ -1,9 +1,21 @@
-<script setup lang="ts">
-import { DrawerContent, DrawerOverlay, DrawerPortal, DrawerRoot, DrawerTrigger } from 'vaul-vue'
+<script setup lang="js">
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerOverlay,
+    DrawerPortal,
+    DrawerTrigger
+
+} from '@/components/ui/drawer'
 </script>
 
 <template>
-  <DrawerRoot should-scale-background>
+  <Drawer should-scale-background>
     <DrawerTrigger
       class="rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
     >
@@ -45,5 +57,5 @@ import { DrawerContent, DrawerOverlay, DrawerPortal, DrawerRoot, DrawerTrigger }
         </div>
       </DrawerContent>
     </DrawerPortal>
-  </DrawerRoot>
+  </Drawer>
 </template>

@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/test' , function (){
-    return Inertia::render('TestNav');
+    return Inertia::render('Test');
 });
 
 require __DIR__.'/auth.php';

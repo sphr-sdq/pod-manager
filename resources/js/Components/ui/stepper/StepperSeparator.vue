@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from "vue";
-import { StepperSeparator, useForwardProps } from "radix-vue";
+import { cn } from '@/lib/utils';
+import { StepperSeparator, useForwardProps } from 'radix-vue';
 
-import { cn } from "@/lib/utils";
+import { computed } from 'vue';
 
 const props = defineProps({
   orientation: { type: String, required: false },
@@ -22,14 +22,10 @@ const forwarded = useForwardProps(delegatedProps);
 </script>
 
 <template>
-
   <StepperSeparator
-
     v-bind="forwarded"
-
     :class="
       cn(
-
         'bg-muted',
         // Disabled
         'group-data-[disabled]:bg-muted group-data-[disabled]:opacity-50',
@@ -40,7 +36,3 @@ const forwarded = useForwardProps(delegatedProps);
     "
   />
 </template>
-
-<style scoped>
-
-</style>

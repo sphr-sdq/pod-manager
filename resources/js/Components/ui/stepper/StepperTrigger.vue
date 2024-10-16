@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from "vue";
-import { StepperTrigger, useForwardProps } from "radix-vue";
+import { cn } from '@/lib/utils';
+import { StepperTrigger, useForwardProps } from 'radix-vue';
 
-import { cn } from "@/lib/utils";
+import { computed } from 'vue';
 
 const props = defineProps({
   asChild: { type: Boolean, required: false },
