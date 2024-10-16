@@ -7,6 +7,10 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
+import { Link, useForm } from '@inertiajs/vue3'
+
+import DemoDrawer from '../components/DemoDrawer.vue'
+
 
 const isLoading = ref(false)
 async function onSubmit(event) {
@@ -20,7 +24,7 @@ async function onSubmit(event) {
 </script>
 
 <template>
-    <div :class="cn('grid gap-6', $attrs.class ?? '')">
+    <div :class="cn('grid gap-6', $attrs.class ?? '')" >
         <form @submit="onSubmit">
             <div class="grid gap-2">
                 <div class="grid gap-1">
@@ -80,13 +84,14 @@ async function onSubmit(event) {
         </p>
         <p class="px-8 text-center text-sm text-muted-foreground">
              هنوز اکانت ندارید ؟ برای ساخت اکانت
-            <a
-                href="/terms"
+            <Link
+                href="/register"
                 class="underline underline-offset-4 hover:text-primary"
             >
                کلیک
-            </a>
+            </Link>
             کنید.
         </p>
+        <DemoDrawer />
     </div>
 </template>

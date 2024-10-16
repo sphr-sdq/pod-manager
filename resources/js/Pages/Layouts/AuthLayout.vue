@@ -3,7 +3,7 @@
 </script>
 
 <template>
-
+<main vaul-drawer-wrapper class="bg-white">
     <div class="container relative hidden h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0
 ">
         <div class="lg:p-8">
@@ -19,5 +19,5 @@
 
         </div>
     </div>
-
+</main>
 </template>
