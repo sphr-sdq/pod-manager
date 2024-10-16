@@ -1,11 +1,10 @@
-<script setup>
-
-</script>
-
 <template>
-  $END$
+    <div>
+        <HideOnScrollNavbar />
+        <!-- Your other content -->
+    </div>
 </template>
 
-<style scoped>
-
-</style>
+<script setup>
+import HideOnScrollNavbar from './components/HideOnScrollNavbar.vue'
+</script>
