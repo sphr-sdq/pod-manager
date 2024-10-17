@@ -10,18 +10,16 @@ import { router } from '@inertiajs/vue3'
 ">
 
             <div class="flex flex-col ">
-                <div class="container mt-6">
-                    <div>
+                <div class="container mt-6 flex justify-between">
+                    <div >
                         <Button @click.prevent="router.visit('/')" variant="outline" size="icon">
-
                                 <House class="w-4 h-4"/>
-
                         </Button>
-
                     </div>
+
                 </div>
-                <div class="lg:p-8 flex-grow content-center">
-                    <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+                <div class="lg:p-8 flex-grow content-center ">
+                    <div class="h-full mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                         <slot/>
                     </div>
                 </div>

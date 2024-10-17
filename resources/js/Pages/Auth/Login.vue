@@ -1,16 +1,13 @@
+<!-- Using Composition API -->
 <script setup>
 import UserAuthForm from "@/Pages/components/UserAuthForm.vue";
-</script>
-
-<script>
 import AuthLayout from '../Layouts/AuthLayout.vue'
-export default {
-    layout: AuthLayout
-}
+
+defineOptions({ layout: AuthLayout })
 </script>
 
 <template>
-    <UserAuthForm />
+
+    <UserAuthForm/>
+
 </template>
-
-

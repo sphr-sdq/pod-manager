@@ -44,7 +44,7 @@ async function onSubmit(event) {
                         شماه موبایل
                     </Label>
                     <Input
-                        id="email"
+                        id="phoneNumber"
                         placeholder=""
                         type="tel"
                         auto-capitalize="none"
@@ -107,4 +107,6 @@ async function onSubmit(event) {
             کنید.
         </p>
     </div>
+
+
 </template>
