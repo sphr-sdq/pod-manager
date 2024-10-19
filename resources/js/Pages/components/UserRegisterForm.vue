@@ -14,12 +14,12 @@ import {
     StepperTitle,
     StepperTrigger
 } from '@/components/ui/stepper'
-import {Check, Circle, Dot, Phone, LockKeyhole, MessageSquare , LoaderCircle} from 'lucide-vue-next'
+import {Check, Circle, Dot, Phone, LockKeyhole, MessageSquare, LoaderCircle} from 'lucide-vue-next'
 import {onMounted, reactive, ref} from 'vue'
 import {Label} from "@/Components/ui/label/index.js";
 import {Input} from "@/Components/ui/input/index.js";
 import {Separator} from '@/components/ui/separator'
-import {Link, router , useForm} from "@inertiajs/vue3";
+import {Link, router, useForm} from "@inertiajs/vue3";
 import Drawer from "../components/DemoDrawer.vue"
 
 
@@ -41,8 +41,12 @@ const isLoading = ref(false);
 // });
 
 const phoneNumber = useForm({
-    phoneNumber : ''
+    phoneNumber: ''
 });
+
+const otpCode = useForm({
+    otpCode: [],
+})
 
 const stepIndex = ref(1)
 const stepperFunctions = reactive({
@@ -65,12 +69,28 @@ const handleNext = () => {
     if (stepIndex.value === 1) {
         handleSendOtp()
     }
+    if (stepIndex.value === 2) {
+        handleOTPVerification()
+    }
 }
 const handleSendOtp = () => {
-    phoneNumber.post("/otp" ,  {
-        onStart : () => isLoading.value = true ,
-        onFinish : () => isLoading.value = false,
-        onSuccess : () =>  stepperFunctions.value.next()
+    phoneNumber.post("/otp", {
+        onStart: () => isLoading.value = true,
+        onFinish: () => isLoading.value = false,
+        onSuccess: () => stepperFunctions.value.next()
+    })
+}
+
+const handleOTPVerification = () => {
+    otpCode.transform((data) => ({
+        otpCode : data.otpCode.join('') ,
+        phoneNumber : phoneNumber.phoneNumber
+    })).post('/verify', {
+        onStart: () => isLoading.value = true,
+        onFinish: () => isLoading.value = false,
+        onSuccess: () => {
+            stepperFunctions.value.next();
+        },
     })
 }
 
@@ -157,7 +177,6 @@ const handleSendOtp = () => {
         <!--main-->
         <div class="basis-4/12 flex flex-col justify-between">
             <div>
-
                 <div v-if="stepIndex === 1">
                     <p class="mb-2 font-semibold transition">
                         شماره همراه خود را وارد کنید
@@ -165,7 +184,7 @@ const handleSendOtp = () => {
                     <p class="mb-4  text-xs text-muted-foreground transition  lg:text-sm">
                         ابتدا شماره موبایل خود را وارد کنید و روی گزینه بعدی را نتخاب کنید تا به مرحله‌ی بعد بروید
                     </p>
-                    <div class="grid gap-1">
+                    <div class="grid mb-5">
                         <form @submit.prevent="handleSendOtp">
 
                             <Label class="" for="phoneNumber">
@@ -184,35 +203,40 @@ const handleSendOtp = () => {
                                 :disabled="isLoading"
                                 dir="ltr"
                             />
-                            <div class="text-xs text-red-600 font-bold my-2" v-if="phoneNumber.errors.phoneNumber">{{phoneNumber.errors.phoneNumber}}</div>
+                            <div class="text-xs text-red-600 font-bold my-2" v-if="phoneNumber.errors.phoneNumber">
+                                {{ phoneNumber.errors.phoneNumber }}
+                            </div>
                         </form>
                     </div>
-
                 </div>
                 <div v-if="stepIndex === 2">
                     <p class="mb-2 font-semibold transition">
-                        شماره همراه خود را وارد کنید
+                        کد تایید دریافتی را وارد کنید
                     </p>
                     <p class="mb-8  text-xs text-muted-foreground transition  lg:text-sm">
                         کد تایید را که برای شماره موبایل شما پیامک شد را وارد کنید
                     </p>
-
-                    <PinInput
-                        id="pin-input"
-                        v-model="value"
-                        placeholder="○">
-                        <PinInputGroup class="gap-1 justify-between">
-                            <template v-for="(id, index) in 5" :key="id">
-                                <PinInputInput
-                                    class="rounded-md border"
-                                    :index="index"
-                                />
-                                <template v-if="index !== 4">
-                                    <PinInputSeparator/>
+                    <form @submit.prevent="handleOTPVerification">
+                        <PinInput
+                            id="pin-input"
+                            v-model="otpCode.otpCode"
+                            placeholder="○">
+                            <PinInputGroup class="gap-1 justify-between">
+                                <template v-for="(id, index) in 5" :key="id">
+                                    <PinInputInput
+                                        class="rounded-md border"
+                                        :index="index"
+                                    />
+                                    <template v-if="index !== 4">
+                                        <PinInputSeparator/>
+                                    </template>
                                 </template>
-                            </template>
-                        </PinInputGroup>
-                    </PinInput>
+                            </PinInputGroup>
+                        </PinInput>
+                        <div class="text-xs text-red-600 font-bold my-2" v-if="otpCode.errors.otpCode">
+                            {{ otpCode.errors.otpCode }}
+                        </div>
+                    </form>
                 </div>
                 <div v-if="stepIndex === 3">
                     <p class="mb-2 font-semibold transition">
@@ -245,10 +269,10 @@ const handleSendOtp = () => {
                     </Button>
                 </div>
                 <div>
-                    <Button v-if="stepIndex !== 3" @click="handleNext" :disabled="isLoading" class="w-20" >
+                    <Button v-if="stepIndex !== 3" @click="handleNext" :disabled="isLoading" class="w-20">
 
                         <span v-if="!isLoading">مرحله بعد</span>
-                        <span v-else><LoaderCircle class="animate-spin" /></span>
+                        <span v-else><LoaderCircle class="animate-spin"/></span>
 
 
                     </Button>

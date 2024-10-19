@@ -16,6 +16,7 @@ Route::middleware('guest')->group(function () {
         ->name('register');
 
     Route::post('/otp' , [RegisteredUserController::class , 'createOTP']);
+    Route::post('verify' , [RegisteredUserController::class , 'verify']);
 //
 //    Route::post('register', [RegisteredUserController::class, 'store']);
 
