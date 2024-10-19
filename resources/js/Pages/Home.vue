@@ -22,6 +22,7 @@ import Hero from "./components/Hero.vue"
                     </div>
                 </Hero>
             </div>
+
         </main>
     </section>
     <section>

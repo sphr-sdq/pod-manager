@@ -21,6 +21,15 @@ import {Input} from "@/Components/ui/input/index.js";
 import {Separator} from '@/components/ui/separator'
 import {Link, router, useForm} from "@inertiajs/vue3";
 import Drawer from "../components/DemoDrawer.vue"
+import { useOtpState } from '@/composables/useOtpState'
+const {
+    timeLeft,
+    minutes,
+    seconds,
+    startTimer,
+    isError
+
+} = useOtpState()
 
 
 const steps = [
@@ -77,7 +86,13 @@ const handleSendOtp = () => {
     phoneNumber.post("/otp", {
         onStart: () => isLoading.value = true,
         onFinish: () => isLoading.value = false,
-        onSuccess: () => stepperFunctions.value.next()
+        onSuccess: () => stepperFunctions.value.next(),
+        onError : (errors) => {
+            startTimer(errors.timeLeft)
+
+            isError.value = true
+            console.log(seconds.value , minutes.value);
+        }
     })
 }
 
@@ -206,6 +221,10 @@ const handleOTPVerification = () => {
                             <div class="text-xs text-red-600 font-bold my-2" v-if="phoneNumber.errors.phoneNumber">
                                 {{ phoneNumber.errors.phoneNumber }}
                             </div>
+                            <div v-if="isError && (minutes && seconds)" class="text-xs text-red-600 font-bold my-2">
+                                {{seconds}} : {{minutes}}
+                            </div>
+
                         </form>
                     </div>
                 </div>

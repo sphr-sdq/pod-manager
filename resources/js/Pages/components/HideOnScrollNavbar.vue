@@ -1,5 +1,5 @@
 <template>
-    <nav class=" fixed w-full duration-150  translate-x-1/2 border border-b-black/20"
+    <nav class=" fixed z-[999] bg-white w-full duration-150  translate-x-1/2 border border-b-black/20"
          :class="{ 'nav-hidden': !showNavbar, 'nav-visible': showNavbar }">
         <div class="container ">
             <div class="grid grid-cols-12 p-2">

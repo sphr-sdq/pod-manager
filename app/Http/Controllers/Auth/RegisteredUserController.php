@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\otpModel;
 use App\Models\User;
+use Carbon\Carbon;
+use App\Exceptions\OtpTimeoutException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,7 +16,6 @@ use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ichtrojan\Otp\Otp;
-
 
 class RegisteredUserController extends Controller
 {
@@ -41,6 +43,12 @@ class RegisteredUserController extends Controller
         //  1) create another post route for validating otp code
         //  2) fix bugs in state manager in vue js for returning or even if user changes the routes returns to the same state of login page using pinia.
         //  3) fix 09--- and 9--- these are are the same. right now user can create two account with one phone number
+        $record = otpModel::where('identifier' , $validated['phoneNumber'])->where('valid' ,'=' , true )->first();
+        ds($record);
+        if($record && $record->created_at->diffInSeconds(Carbon::now()) < 90){
+           throw new OtpTimeoutException(90 - $record->created_at->diffInSeconds(Carbon::now()));
+        }
+
 
         $otp = (new Otp)->generate($validated["phoneNumber"], 'numeric', 5, 15);
         ds($otp);
