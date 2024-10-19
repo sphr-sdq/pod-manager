@@ -14,12 +14,12 @@ import {
     StepperTitle,
     StepperTrigger
 } from '@/components/ui/stepper'
-import {Check, Circle, Dot, Phone, LockKeyhole, MessageSquare} from 'lucide-vue-next'
+import {Check, Circle, Dot, Phone, LockKeyhole, MessageSquare , LoaderCircle} from 'lucide-vue-next'
 import {onMounted, reactive, ref} from 'vue'
 import {Label} from "@/Components/ui/label/index.js";
 import {Input} from "@/Components/ui/input/index.js";
 import {Separator} from '@/components/ui/separator'
-import {Link} from "@inertiajs/vue3";
+import {Link, router , useForm} from "@inertiajs/vue3";
 import Drawer from "../components/DemoDrawer.vue"
 
 
@@ -34,28 +34,46 @@ const steps = [
         step: 3,
     },
 ]
-const value = ref([])
-const phoneNumber = ref(null)
+const value = ref([]);
+const isLoading = ref(false);
+// const phoneNumber = ref({
+//     phoneNumber : null
+// });
+
+const phoneNumber = useForm({
+    phoneNumber : ''
+});
+
 const stepIndex = ref(1)
 const stepperFunctions = reactive({
-    prev : null,
-    next : null,
-    is_prev_disabled : null,
-    is_next_disabled : null
-})
+    prev: null,
+    next: null,
+    is_prev_disabled: null,
+    is_next_disabled: null
+});
 
-const setStepperFunction = (prev , next , is_prev_disabled , is_next_disabled) =>{
+const setStepperFunction = (prev, next, is_prev_disabled, is_next_disabled) => {
     stepperFunctions.value = {
-        prev , next ,  is_prev_disabled , is_next_disabled
+        prev, next, is_prev_disabled, is_next_disabled
     }
 }
 const handlePrev = () => {
-   stepperFunctions.value.prev()
+    stepperFunctions.value.prev()
 };
 
 const handleNext = () => {
-    stepperFunctions.value.next()
+    if (stepIndex.value === 1) {
+        handleSendOtp()
+    }
 }
+const handleSendOtp = () => {
+    phoneNumber.post("/otp" ,  {
+        onStart : () => isLoading.value = true ,
+        onFinish : () => isLoading.value = false,
+        onSuccess : () =>  stepperFunctions.value.next()
+    })
+}
+
 </script>
 
 <template>
@@ -79,7 +97,7 @@ const handleNext = () => {
                      v-model="stepIndex"
                      v-slot="{ isNextDisabled, isPrevDisabled, nextStep, prevStep }"
             >
-                {{setStepperFunction(prevStep , nextStep , isPrevDisabled ,isNextDisabled)}}
+                {{ setStepperFunction(prevStep, nextStep, isPrevDisabled, isNextDisabled) }}
                 <StepperItem
                     v-for="step in steps"
                     :key="step.step"
@@ -148,19 +166,26 @@ const handleNext = () => {
                         ابتدا شماره موبایل خود را وارد کنید و روی گزینه بعدی را نتخاب کنید تا به مرحله‌ی بعد بروید
                     </p>
                     <div class="grid gap-1">
-                        <Label class="" for="email">
-                            شماه موبایل
-                        </Label>
-                        <Input
-                            id="phoneNumber"
-                            placeholder=""
-                            type="tel"
-                            auto-capitalize="none"
-                            auto-complete="email"
-                            auto-correct="off"
-                            :disabled="isLoading"
-                            dir="ltr"
-                        />
+                        <form @submit.prevent="handleSendOtp">
+
+                            <Label class="" for="phoneNumber">
+                                شماه موبایل
+                            </Label>
+                            <Input
+                                v-model="phoneNumber.phoneNumber"
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                placeholder="9*********"
+                                type="tel"
+                                auto-capitalize="none"
+                                auto-complete="email"
+                                auto-correct="off"
+
+                                :disabled="isLoading"
+                                dir="ltr"
+                            />
+                            <div class="text-xs text-red-600 font-bold my-2" v-if="phoneNumber.errors.phoneNumber">{{phoneNumber.errors.phoneNumber}}</div>
+                        </form>
                     </div>
 
                 </div>
@@ -215,12 +240,18 @@ const handleNext = () => {
             </div>
             <div class="flex justify-between">
                 <div id="prev">
-                    <Button variant="outline" :disabled="stepIndex === 1" @click="handlePrev"  >
+                    <Button variant="outline" :disabled="stepIndex === 1" @click="handlePrev">
                         مرحله قبل
                     </Button>
                 </div>
                 <div>
-                    <Button v-if="stepIndex !== 3" @click="handleNext">مرحله بعد</Button>
+                    <Button v-if="stepIndex !== 3" @click="handleNext" :disabled="isLoading" class="w-20" >
+
+                        <span v-if="!isLoading">مرحله بعد</span>
+                        <span v-else><LoaderCircle class="animate-spin" /></span>
+
+
+                    </Button>
                     <Button v-else>ثبت نام</Button>
                 </div>
             </div>
@@ -229,7 +260,7 @@ const handleNext = () => {
 
         <!--footer-->
         <div class="basis-4/12 ">
-            <Separator class="my-6" />
+            <Separator class="my-6"/>
 
             <p class=" text-sm text-muted-foreground">
                 در صورتی که اکانت دارید میتوانید از طربق این

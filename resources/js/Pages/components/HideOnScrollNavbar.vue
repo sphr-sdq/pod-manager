@@ -1,38 +1,51 @@
 <template>
-    <nav class="bg-black/40 fixed w-full duration-150  translate-x-1/2"
+    <nav class=" fixed w-full duration-150  translate-x-1/2 border border-b-black/20"
          :class="{ 'nav-hidden': !showNavbar, 'nav-visible': showNavbar }">
-        <div class="container grid grid-cols-12 p-10">
-            <div class="col-span-4 bg-blue-600"></div>
-            <div class="bg-red-600 col-span-4">
-                <NavigationMenu>
-                    <NavigationMenuList>
-                        <NavigationMenuItem>
-                            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-                            <NavigationMenuContent>
-                                <ul class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                    <li v-for="component in components" :key="component.title">
-                                        <NavigationMenuLink as-child>
-                                            <a
-                                                :href="component.href"
-                                                class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                            >
-                                                <div class="text-sm font-medium leading-none">{{
-                                                        component.title
-                                                    }}
-                                                </div>
-                                                <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                                    {{ component.description }}
-                                                </p>
-                                            </a>
-                                        </NavigationMenuLink>
-                                    </li>
-                                </ul>
-                            </NavigationMenuContent>
-                        </NavigationMenuItem>
-                    </NavigationMenuList>
-                </NavigationMenu>
+        <div class="container ">
+            <div class="grid grid-cols-12 p-2">
+
+
+                <div class="col-span-4 ">Logo</div>
+
+                <div class="col-span-4">
+                    <NavigationMenu >
+                        <NavigationMenuList >
+                            <NavigationMenuItem>
+                                <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                                <NavigationMenuContent>
+                                    <ul class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                        <li v-for="component in components" :key="component.title">
+                                            <NavigationMenuLink as-child>
+                                                <a
+                                                    :href="component.href"
+                                                    class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                                >
+                                                    <div class="text-sm font-medium leading-none">{{
+                                                            component.title
+                                                        }}
+                                                    </div>
+                                                    <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                                        {{ component.description }}
+                                                    </p>
+                                                </a>
+                                            </NavigationMenuLink>
+                                        </li>
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </NavigationMenu>
+                </div>
+
+                <div class="col-span-4  flex justify-end items-center gap-2">
+                    <Button @click="router.visit('/login')">
+                        ورود
+                    </Button>
+                    <Button variant="outline" @click="router.visit('/register')">
+                        ثبت نام
+                    </Button>
+                </div>
             </div>
-            <div class="col-span-4 bg-green-700">hi</div>
 
         </div>
     </nav>
@@ -40,6 +53,9 @@
 
 <script setup>
 import {ref, onMounted, onBeforeUnmount} from 'vue'
+import { Slash } from 'lucide-vue-next';
+
+import {Link} from "@inertiajs/vue3"
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -49,7 +65,8 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-
+import { Button } from '@/components/ui/button'
+import { router } from '@inertiajs/vue3'
 const components = [
     {
         title: 'Alert Dialog',

@@ -23,6 +23,19 @@ class RegisteredUserController extends Controller
         return Inertia::render('Auth/Register');
     }
 
+    public function createOTP(Request $request)  : void
+    {
+        sleep(2);
+        ds($request);
+        $request->validate([
+            "phoneNumber" => "required|regex:/(0?9\d{9})/"
+        ],[
+            "required" => "شماره موبایل اجباری است",
+            "regex" => "شماره موبایل نامعتبر است"
+        ]);
+
+    }
+
     /**
      * Handle an incoming registration request.
      *
