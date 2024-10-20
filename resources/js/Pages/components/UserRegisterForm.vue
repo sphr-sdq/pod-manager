@@ -21,7 +21,10 @@ import {Input} from "@/Components/ui/input/index.js";
 import {Separator} from '@/components/ui/separator'
 import {Link, router, useForm} from "@inertiajs/vue3";
 import Drawer from "../components/DemoDrawer.vue"
-import { useOtpState } from '@/composables/useOtpState'
+import {useOtpState} from '@/composables/useOtpState'
+import {useOTPStore} from "@/stores/otp.js";
+
+const useStore = useOTPStore()
 const {
     timeLeft,
     minutes,
@@ -71,7 +74,11 @@ const setStepperFunction = (prev, next, is_prev_disabled, is_next_disabled) => {
     }
 }
 const handlePrev = () => {
-    stepperFunctions.value.prev()
+    if (stepIndex.value !== 3) {
+        stepperFunctions.value.prev()
+    } else {
+        stepIndex.value = 1;
+    }
 };
 
 const handleNext = () => {
@@ -83,23 +90,30 @@ const handleNext = () => {
     }
 }
 const handleSendOtp = () => {
-    phoneNumber.post("/otp", {
-        onStart: () => isLoading.value = true,
-        onFinish: () => isLoading.value = false,
-        onSuccess: () => stepperFunctions.value.next(),
-        onError : (errors) => {
-            startTimer(errors.timeLeft)
 
-            isError.value = true
-            console.log(seconds.value , minutes.value);
-        }
-    })
+    if ((useStore.phoneNumber && useStore.phoneNumber === phoneNumber.phoneNumber) && useStore.hasError) {
+        startTimer(useStore.getRemainingTime)
+    } else {
+        phoneNumber.post("/otp", {
+            onStart: () => isLoading.value = true,
+            onFinish: () => isLoading.value = false,
+            onSuccess: () => stepperFunctions.value.next(),
+            onError:
+                (errors) => {
+                    if (errors.timeLeft) {
+                        startTimer(errors.timeLeft)
+                        useStore.setErrorTime(errors.timeLeft, phoneNumber.phoneNumber)
+                    }
+                }
+        })
+    }
 }
+
 
 const handleOTPVerification = () => {
     otpCode.transform((data) => ({
-        otpCode : data.otpCode.join('') ,
-        phoneNumber : phoneNumber.phoneNumber
+        otpCode: data.otpCode.join(''),
+        phoneNumber: phoneNumber.phoneNumber
     })).post('/verify', {
         onStart: () => isLoading.value = true,
         onFinish: () => isLoading.value = false,
@@ -211,18 +225,18 @@ const handleOTPVerification = () => {
                                 name="phoneNumber"
                                 placeholder="9*********"
                                 type="tel"
-                                auto-capitalize="none"
-                                auto-complete="email"
                                 auto-correct="off"
-
-                                :disabled="isLoading"
+                                :disabled="isLoading || isError"
                                 dir="ltr"
                             />
-                            <div class="text-xs text-red-600 font-bold my-2" v-if="phoneNumber.errors.phoneNumber">
-                                {{ phoneNumber.errors.phoneNumber }}
+
+                            <div v-if="isError && (minutes  && seconds) " class="text-xs text-red-600 font-bold my-2">
+                                برای دریافت کد جدید لازم است
+                                {{ seconds }} : {{ minutes }}
+                                دیگر مجدد تلاش کنید.
                             </div>
-                            <div v-if="isError && (minutes && seconds)" class="text-xs text-red-600 font-bold my-2">
-                                {{seconds}} : {{minutes}}
+                            <div class="text-xs text-red-600 font-bold my-2" v-else-if="phoneNumber.errors.phoneNumber">
+                                {{ phoneNumber.errors.phoneNumber }}
                             </div>
 
                         </form>
@@ -233,13 +247,17 @@ const handleOTPVerification = () => {
                         کد تایید دریافتی را وارد کنید
                     </p>
                     <p class="mb-8  text-xs text-muted-foreground transition  lg:text-sm">
-                        کد تایید را که برای شماره موبایل شما پیامک شد را وارد کنید
+                        کد تاییدی را که برای شماره {{ phoneNumber.phoneNumber }} پیامک شده را وارد کنید
                     </p>
                     <form @submit.prevent="handleOTPVerification">
                         <PinInput
                             id="pin-input"
                             v-model="otpCode.otpCode"
-                            placeholder="○">
+                            placeholder="○"
+                            name="pin-input"
+                            @complete="handleOTPVerification"
+                        >
+
                             <PinInputGroup class="gap-1 justify-between">
                                 <template v-for="(id, index) in 5" :key="id">
                                     <PinInputInput
@@ -252,6 +270,9 @@ const handleOTPVerification = () => {
                                 </template>
                             </PinInputGroup>
                         </PinInput>
+                        <div class="text-xs text-red-600 font-bold my-2" v-if="otpCode.errors.invalid">
+                            {{ otpCode.errors.invalid }}
+                        </div>
                         <div class="text-xs text-red-600 font-bold my-2" v-if="otpCode.errors.otpCode">
                             {{ otpCode.errors.otpCode }}
                         </div>
@@ -284,11 +305,12 @@ const handleOTPVerification = () => {
             <div class="flex justify-between">
                 <div id="prev">
                     <Button variant="outline" :disabled="stepIndex === 1" @click="handlePrev">
-                        مرحله قبل
+                        <span v-if="stepIndex !== 3">مرحله قبل</span>
+                        <span v-else>تغییر شماره</span>
                     </Button>
                 </div>
                 <div>
-                    <Button v-if="stepIndex !== 3" @click="handleNext" :disabled="isLoading" class="w-20">
+                    <Button v-if="stepIndex !== 3" @click="handleNext" :disabled="isLoading || isError" class="w-20">
 
                         <span v-if="!isLoading">مرحله بعد</span>
                         <span v-else><LoaderCircle class="animate-spin"/></span>

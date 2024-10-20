@@ -9,6 +9,7 @@ export function useOtpState() {
 
     const startTimer = (time) => {
         stopTimer();
+        isError.value= true;
         timeLeft.value = Math.ceil(time);
 
         timer = setInterval(() => {
@@ -21,7 +22,6 @@ export function useOtpState() {
             minutes.value = minutes.value < 10 ? `0${minutes.value}` : minutes.value.toString();
             seconds.value = seconds.value < 10 ? `0${seconds.value}` : seconds.value.toString();
 
-            console.log(minutes.value, seconds.value);
 
 
 
@@ -37,6 +37,7 @@ export function useOtpState() {
             clearInterval(timer);
             timer = null;
         }
+        isError.value = false;
         timeLeft.value = null;
         minutes.value = null;
         seconds.value = null;

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ichtrojan\Otp\Otp;
@@ -27,14 +28,14 @@ class RegisteredUserController extends Controller
         return Inertia::render('Auth/Register');
     }
 
-    public function createOTP(Request $request)  : void
+    public function createOTP(Request $request): void
     {
         sleep(2);
 
 
         $validated = $request->validate([
-            "phoneNumber" => "required|regex:/(0?9\d{9})/"
-        ],[
+            "phoneNumber" => "required|regex:/(09\d{9})/"
+        ], [
             "required" => "شماره موبایل اجباری است.",
             "regex" => "شماره موبایل نامعتبر است."
         ]);
@@ -43,10 +44,10 @@ class RegisteredUserController extends Controller
         //  1) create another post route for validating otp code
         //  2) fix bugs in state manager in vue js for returning or even if user changes the routes returns to the same state of login page using pinia.
         //  3) fix 09--- and 9--- these are are the same. right now user can create two account with one phone number
-        $record = otpModel::where('identifier' , $validated['phoneNumber'])->where('valid' ,'=' , true )->first();
+        $record = otpModel::where('identifier', $validated['phoneNumber'])->where('valid', '=', true)->first();
         ds($record);
-        if($record && $record->created_at->diffInSeconds(Carbon::now()) < 90){
-           throw new OtpTimeoutException(90 - $record->created_at->diffInSeconds(Carbon::now()));
+        if ($record && $record->created_at->diffInSeconds(Carbon::now()) < 90) {
+            throw new OtpTimeoutException(90 - $record->created_at->diffInSeconds(Carbon::now()));
         }
 
 
@@ -55,19 +56,32 @@ class RegisteredUserController extends Controller
 
     }
 
-    public function verify(Request $request) : void
+    public function verify(Request $request)
     {
 
         $validated = $request->validate([
             "otpCode" => 'required|size:5',
             "phoneNumber" => 'required'
-        ] ,
-        [
-            "required" => "کد تایید شماره موبایل اجیاری است.",
-            "size" => "کد به درستی وارد نشده است."
-        ]);
+        ],
+            [
+                "required" => "کد تایید شماره موبایل اجباری است.",
+                "size" => "کد به درستی وارد نشده است."
+            ]);
         $check = (new Otp)->validate($validated['phoneNumber'], $validated['otpCode']);
         ds($check);
+        if (!$check->status) {
+            if ($check->message === "OTP is not valid") {
+                throw  ValidationException::withMessages([
+                    'invalid' => 'کد وارد شده نا‌معتبر است'
+                ]);
+            } elseif ($check->message === "OTP does not exist") {
+                throw ValidationException::withMessages([
+                    "invalid" => "کد وارد شده صحیح نمی باشد "
+                ]);
+            }
+
+        }
+
 
     }
 
@@ -80,7 +94,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
