@@ -48,9 +48,7 @@ const steps = [
 ]
 const value = ref([]);
 const isLoading = ref(false);
-// const phoneNumber = ref({
-//     phoneNumber : null
-// });
+
 
 const phoneNumber = useForm({
     phoneNumber: ''
@@ -90,6 +88,12 @@ const handleNext = () => {
     }
 }
 const handleSendOtp = () => {
+
+    console.log(otpCode.data())
+    otpCode.clearErrors()
+    otpCode.otpCode = []
+
+    console.log(otpCode.data())
 
     if ((useStore.phoneNumber && useStore.phoneNumber === phoneNumber.phoneNumber) && useStore.hasError) {
         startTimer(useStore.getRemainingTime)
@@ -231,7 +235,7 @@ const handleOTPVerification = () => {
                             />
 
                             <div v-if="isError && (minutes  && seconds) " class="text-xs text-red-600 font-bold my-2">
-                                برای دریافت کد جدید لازم است
+                                برای دریافت کد جدید لطفا
                                 {{ seconds }} : {{ minutes }}
                                 دیگر مجدد تلاش کنید.
                             </div>
@@ -256,6 +260,7 @@ const handleOTPVerification = () => {
                             placeholder="○"
                             name="pin-input"
                             @complete="handleOTPVerification"
+                            :disabled ="isLoading || isError"
                         >
 
                             <PinInputGroup class="gap-1 justify-between">
@@ -304,20 +309,31 @@ const handleOTPVerification = () => {
             </div>
             <div class="flex justify-between">
                 <div id="prev">
-                    <Button variant="outline" :disabled="stepIndex === 1" @click="handlePrev">
+                    <Button variant="outline" v-if="stepIndex !== 1" @click="handlePrev">
                         <span v-if="stepIndex !== 3">مرحله قبل</span>
                         <span v-else>تغییر شماره</span>
                     </Button>
                 </div>
                 <div>
-                    <Button v-if="stepIndex !== 3" @click="handleNext" :disabled="isLoading || isError" class="w-20">
+                    <Button  @click="handleNext" :disabled="isLoading || isError" class="w-20">
 
-                        <span v-if="!isLoading">مرحله بعد</span>
+                        <span v-if="!isLoading">
+                            <span v-if="stepIndex === 1">
+                            دریافت کد
+                            </span>
+                            <span v-else-if="stepIndex === 2">
+                            تایید کد
+                            </span>
+                            <span v-else-if="stepIndex === 3">
+                           ثبت نام
+                            </span>
+
+                        </span>
                         <span v-else><LoaderCircle class="animate-spin"/></span>
 
 
                     </Button>
-                    <Button v-else>ثبت نام</Button>
+
                 </div>
             </div>
         </div>
