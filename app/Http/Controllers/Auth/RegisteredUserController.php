@@ -30,7 +30,6 @@ class RegisteredUserController extends Controller
 
     public function createOTP(Request $request): void
     {
-        sleep(2);
 
 
         $validated = $request->validate([
@@ -40,16 +39,18 @@ class RegisteredUserController extends Controller
             "regex" => "شماره موبایل نامعتبر است."
         ]);
 
-        // TODO
-        //  1) create another post route for validating otp code
-        //  2) fix bugs in state manager in vue js for returning or even if user changes the routes returns to the same state of login page using pinia.
-        //  3) fix 09--- and 9--- these are are the same. right now user can create two account with one phone number
+        $userExists = User::where('phoneNumber', $validated['phoneNumber'])->exists();
+        if ($userExists) {
+            throw ValidationException::withMessages([
+                'userExist' => "این شماره قبلا به ثبت رسیده است"
+            ]);
+        }
+
         $record = otpModel::where('identifier', $validated['phoneNumber'])->where('valid', '=', true)->first();
-        ds($record);
+
         if ($record && $record->created_at->diffInSeconds(Carbon::now()) < 90) {
             throw new OtpTimeoutException(90 - $record->created_at->diffInSeconds(Carbon::now()));
         }
-
 
         $otp = (new Otp)->generate($validated["phoneNumber"], 'numeric', 5, 15);
         ds($otp);
@@ -85,6 +86,7 @@ class RegisteredUserController extends Controller
 
     }
 
+
     /**
      * Handle an incoming registration request.
      *
@@ -92,22 +94,32 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        $validated  = $request->validate([
+            'phoneNumber' => "required|regex:/(09\d{9})/",
+            'password' => ['required', Rules\Password::defaults()],
+        ] ,
+        [
+            'required' => 'پر کردن فیلد رمز عبور الزامی است.',
+            'password' => [
+                'min' => 'رمز عبور باید حداقل :min کاراکتر باشد.',
+                'letters' => 'رمز عبور باید حداقل یک حرف داشته باشد.',
+                'mixed' => 'رمز عبور باید شامل حروف بزرگ و کوچک باشد.',
+                'numbers' => 'رمز عبور باید حداقل یک عدد داشته باشد.',
+                'symbols' => 'رمز عبور باید حداقل یک کاراکتر خاص (مانند !@#$) داشته باشد.',
+                'uncompromised' => 'این رمز عبور در یک نشت اطلاعات قبلی یافت شده است. لطفاً یک رمز عبور دیگر انتخاب کنید.',
+            ],
+        ]
+        );
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'phoneNumber' => $validated['phoneNumber'],
+            'password' => Hash::make($validated['password']),
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('home', absolute: false));
     }
 }

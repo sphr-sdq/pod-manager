@@ -58,6 +58,10 @@ const otpCode = useForm({
     otpCode: [],
 })
 
+const password = useForm({
+    password: '',
+})
+
 const stepIndex = ref(1)
 const stepperFunctions = reactive({
     prev: null,
@@ -85,6 +89,9 @@ const handleNext = () => {
     }
     if (stepIndex.value === 2) {
         handleOTPVerification()
+    }
+    if (stepIndex.value === 3) {
+        handleRegister()
     }
 }
 const handleSendOtp = () => {
@@ -127,14 +134,24 @@ const handleOTPVerification = () => {
     })
 }
 
+const handleRegister = () => {
+    password.transform((data) =>({
+        password : data.password,
+        phoneNumber : phoneNumber.phoneNumber
+    })).post('/register' , {
+        onStart : () => isLoading.value = true,
+        onFinish : () => isLoading.value = false
+    })
+}
+
 </script>
 
 <template>
 
-    <div class="flex flex-col h-full ">
+    <div class="flex flex-col h-full  justify-between">
 
         <!--header-->
-        <div class=" basis-4/12">
+        <div class=" basis-3/12">
             <div class="flex flex-row items-baseline gap-2 mb-2">
                 <div class="w-3 h-3 border-2 border-black p-0.5">
                     <div class="w-full h-full bg-black"></div>
@@ -143,7 +160,10 @@ const handleOTPVerification = () => {
             </div>
 
             <h3 class="text-sm text-muted-foreground">
-                برای اینجاد حساب کاریری مراحل زیر را طی نمیایید.
+
+
+                برای اینجاد حساب کاریری مراحل زیر را طی نمایید.
+
             </h3>
 
             <Stepper class="flex mt-6 w-full items-start"
@@ -155,8 +175,10 @@ const handleOTPVerification = () => {
                     v-for="step in steps"
                     :key="step.step"
                     v-slot="{ state }"
+                    disabled
                     class="relative max-w-1/3  flex w-full flex-col items-center justify-center"
                     :step="step.step"
+
 
                 >
                     <StepperSeparator
@@ -169,7 +191,7 @@ const handleOTPVerification = () => {
 
                             :variant="state === 'completed' || state === 'active' ? 'default' : 'outline'"
                             size="icon"
-                            class="z-10 rounded-full shrink-0 mt-2"
+                            class="z-10 rounded-full shrink-0 mt-2 disabled:opacity-100"
                             :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']"
                         >
                             <Check v-if="state === 'completed'" class="size-5"/>
@@ -208,16 +230,20 @@ const handleOTPVerification = () => {
         </div>
 
         <!--main-->
-        <div class="basis-4/12 flex flex-col justify-between">
-            <div>
-                <div v-if="stepIndex === 1">
-                    <p class="mb-2 font-semibold transition">
-                        شماره همراه خود را وارد کنید
-                    </p>
-                    <p class="mb-4  text-xs text-muted-foreground transition  lg:text-sm">
-                        ابتدا شماره موبایل خود را وارد کنید و روی گزینه بعدی را نتخاب کنید تا به مرحله‌ی بعد بروید
-                    </p>
-                    <div class="grid mb-5">
+        <div class="basis-5/12 flex flex-col ">
+            <div class="flex-grow">
+                <div v-if="stepIndex === 1" class="flex flex-col h-full">
+                    <div>
+
+                        <p class="mb-2 font-semibold transition">
+                            شماره همراه خود را وارد کنید
+                        </p>
+                        <p class=" text-xs text-muted-foreground transition  lg:text-sm text-justify">
+                            ابتدا شماره موبایل خود را وارد کنید و گزینه‌ی دریافت کد را نتخاب کنید تا به مرحله‌ی بعد
+                            بروید
+                        </p>
+                    </div>
+                    <div class="my-auto grid">
                         <form @submit.prevent="handleSendOtp">
 
                             <Label class="" for="phoneNumber">
@@ -227,14 +253,16 @@ const handleOTPVerification = () => {
                                 v-model="phoneNumber.phoneNumber"
                                 id="phoneNumber"
                                 name="phoneNumber"
-                                placeholder="9*********"
+                                placeholder="09*********"
                                 type="tel"
                                 auto-correct="off"
                                 :disabled="isLoading || isError"
                                 dir="ltr"
                             />
-
-                            <div v-if="isError && (minutes  && seconds) " class="text-xs text-red-600 font-bold my-2">
+                            <div class="text-xs text-red-600 font-bold my-2" v-if="phoneNumber.errors.userExist">
+                                {{ phoneNumber.errors.userExist }}
+                            </div>
+                            <div v-else-if="isError && (minutes  && seconds) " class="text-xs text-red-600 font-bold my-2">
                                 برای دریافت کد جدید لطفا
                                 {{ seconds }} : {{ minutes }}
                                 دیگر مجدد تلاش کنید.
@@ -243,60 +271,81 @@ const handleOTPVerification = () => {
                                 {{ phoneNumber.errors.phoneNumber }}
                             </div>
 
+
                         </form>
                     </div>
                 </div>
-                <div v-if="stepIndex === 2">
-                    <p class="mb-2 font-semibold transition">
-                        کد تایید دریافتی را وارد کنید
-                    </p>
-                    <p class="mb-8  text-xs text-muted-foreground transition  lg:text-sm">
-                        کد تاییدی را که برای شماره {{ phoneNumber.phoneNumber }} پیامک شده را وارد کنید
-                    </p>
-                    <form @submit.prevent="handleOTPVerification">
-                        <PinInput
-                            id="pin-input"
-                            v-model="otpCode.otpCode"
-                            placeholder="○"
-                            name="pin-input"
-                            @complete="handleOTPVerification"
-                            :disabled ="isLoading || isError"
-                        >
+                <div v-if="stepIndex === 2" class="flex flex-col h-full">
+                    <div>
 
-                            <PinInputGroup class="gap-1 justify-between">
-                                <template v-for="(id, index) in 5" :key="id">
-                                    <PinInputInput
-                                        class="rounded-md border"
-                                        :index="index"
-                                    />
-                                    <template v-if="index !== 4">
-                                        <PinInputSeparator/>
+                        <p class="mb-2 font-semibold transition">
+                            کد تایید دریافتی را وارد کنید
+                        </p>
+                        <p class="text-xs text-muted-foreground transition  lg:text-sm text-justify">
+                            کد تاییدی را که برای شماره
+                            <span dir="ltr" class="font-bold">
+                        {{ "&thinsp; +98" + phoneNumber.phoneNumber.substring(1) + " " }}
+                            </span>
+                            پیامک شده را وارد کنید. در صورتی که این شماره شما نیست لطفا به مرحله قبل بازگردید.
+                        </p>
+                    </div>
+                    <div class="my-auto">
+
+
+                        <form @submit.prevent="handleOTPVerification">
+                            <PinInput
+                                id="pin-input"
+                                v-model="otpCode.otpCode"
+                                placeholder="○"
+                                name="pin-input"
+                                @complete="handleOTPVerification"
+                                :disabled="isLoading || isError"
+                            >
+
+                                <PinInputGroup class="gap-1 justify-between">
+                                    <template v-for="(id, index) in 5" :key="id">
+                                        <PinInputInput
+                                            class="rounded-md border"
+                                            :index="index"
+                                        />
+                                        <template v-if="index !== 4">
+                                            <PinInputSeparator/>
+                                        </template>
                                     </template>
-                                </template>
-                            </PinInputGroup>
-                        </PinInput>
-                        <div class="text-xs text-red-600 font-bold my-2" v-if="otpCode.errors.invalid">
-                            {{ otpCode.errors.invalid }}
-                        </div>
-                        <div class="text-xs text-red-600 font-bold my-2" v-if="otpCode.errors.otpCode">
-                            {{ otpCode.errors.otpCode }}
-                        </div>
-                    </form>
-                </div>
-                <div v-if="stepIndex === 3">
-                    <p class="mb-2 font-semibold transition">
-                        انتخاب رمز عبور
-                    </p>
-                    <p class="mb-8  text-xs text-muted-foreground transition  lg:text-sm">
-                        برای حساب کاربری خود یک رمز عبور انتخاب کنید
-                    </p>
+                                </PinInputGroup>
+                            </PinInput>
+                            <div class="text-xs text-red-600 font-bold my-2" v-if="otpCode.errors.invalid">
+                                {{ otpCode.errors.invalid }}
+                            </div>
+                            <div class="text-xs text-red-600 font-bold my-2" v-else-if="otpCode.errors.otpCode">
+                                {{ otpCode.errors.otpCode }}
+                            </div>
 
-                    <div class="grid gap-1">
-                        <Label class="" for="email">
+                        </form>
+
+                    </div>
+                </div>
+                <div v-if="stepIndex === 3" class="flex flex-col h-full">
+                    <div>
+                        <p class="mb-2 font-semibold transition">
+                            انتخاب رمز عبور
+                        </p>
+                        <p class=" text-xs text-muted-foreground transition  lg:text-sm">
+                            برای حساب کاربری خود یک رمز عبور انتخاب کنید
+                        </p>
+                    </div>
+
+
+                    <div class="grid gap-1 my-auto">
+                        <form @submit.prevent="handleNext">
+
+
+                        <Label class="" for="password">
                             رمز عبور
                         </Label>
                         <Input
-                            id="email"
+                            v-model="password.password"
+                            id="password"
                             placeholder=""
                             type="password"
                             auto-capitalize="none"
@@ -304,6 +353,10 @@ const handleOTPVerification = () => {
                             :disabled="isLoading"
                             dir="ltr"
                         />
+                            <div class="text-xs text-red-600 font-bold my-2" v-if="password.errors.password">
+                                {{password.errors.password }}
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -315,7 +368,7 @@ const handleOTPVerification = () => {
                     </Button>
                 </div>
                 <div>
-                    <Button  @click="handleNext" :disabled="isLoading || isError" class="w-20">
+                    <Button @click="handleNext" :disabled="isLoading || isError" class="w-20">
 
                         <span v-if="!isLoading">
                             <span v-if="stepIndex === 1">
@@ -343,7 +396,7 @@ const handleOTPVerification = () => {
         <div class="basis-4/12 ">
             <Separator class="my-6"/>
 
-            <p class=" text-sm text-muted-foreground">
+            <p class=" text-sm text-muted-foreground text-justify">
                 در صورتی که اکانت دارید میتوانید از طربق این
                 <Link
                     href="/login"
@@ -353,12 +406,12 @@ const handleOTPVerification = () => {
                 </Link>
                 وارد حساب کاربری خود شوید.
             </p>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-sm text-muted-foreground mt-2 text-justify">
                 با ثبت نام در این وبسایت تمام
 
                 <Drawer/>
 
-                سابت را می‌پذیرم.
+                سایت را می‌پذیرم.
             </p>
         </div>
 
