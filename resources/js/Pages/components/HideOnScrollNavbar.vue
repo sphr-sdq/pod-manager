@@ -37,13 +37,21 @@
                     </NavigationMenu>
                 </div>
 
-                <div class="col-span-4  flex justify-end items-center gap-2">
-                    <Button @click="router.visit('/login')">
-                        ورود
-                    </Button>
-                    <Button variant="outline" @click="router.visit('/register')">
-                        ثبت نام
-                    </Button>
+                <div class="col-span-4">
+                    <div v-if="!$page.props.auth.user" class=" flex justify-end items-center gap-2">
+                        <Button @click="router.visit('/login')">
+                            ورود
+                        </Button>
+                        <Button variant="outline" @click="router.visit('/register')">
+                            ثبت نام
+                        </Button>
+                    </div>
+                    <div v-else  class=" flex justify-end items-center gap-2">
+                        <Button variant="outline" @click.prevent="router.post('/logout')">
+                            خروج
+                        </Button>
+                    </div>
+
                 </div>
             </div>
 

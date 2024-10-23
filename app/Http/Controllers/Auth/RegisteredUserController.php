@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\GenerateProfilePicture;
 use App\Models\otpModel;
 use App\Models\User;
 use Carbon\Carbon;
@@ -116,6 +117,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+//        GenerateProfilePicture::dispatch($user)->onQueue('profile-pictures');
         event(new Registered($user));
 
         Auth::login($user);
