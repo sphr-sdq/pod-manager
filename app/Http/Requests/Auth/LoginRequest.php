@@ -64,7 +64,8 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'phoneNumber' => trans('auth.failed'),
+                'phoneNumber' => 'شماره تلفن یا پسورد اشتباه است.',
+
             ]);
         }
 

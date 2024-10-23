@@ -32,6 +32,8 @@ class RegisteredUserController extends Controller
     public function createOTP(Request $request): void
     {
 
+        // TODO check if user already exist
+
 
         $validated = $request->validate([
             "phoneNumber" => "required|regex:/(09\d{9})/"
