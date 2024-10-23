@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Auth;
 
+
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+
 
 class LoginRequest extends FormRequest
 {
@@ -27,8 +29,25 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'phoneNumber' => ['required', 'string', 'regex:/^09\d{9}$/'],
+            'password' => ['required', 'string' , \Illuminate\Validation\Rules\Password::default()],
+        ] ;
+    }
+
+
+    public function messages(): array
+    {
+        return [
+            'phoneNumber.required' => 'پر کردن فیلد شماره تلفن الزامی است.',
+            'phoneNumber.regex' => 'شماره تلفن باید با 09 شروع شود و شامل 11 رقم باشد.',
+
+            'password.required' => 'پر کردن فیلد رمز عبور الزامی است.',
+            'password.min' => 'رمز عبور باید حداقل :min کاراکتر باشد.',
+            'password.letters' => 'رمز عبور باید حداقل یک حرف داشته باشد.',
+            'password.mixed' => 'رمز عبور باید شامل حروف بزرگ و کوچک باشد.',
+            'password.numbers' => 'رمز عبور باید حداقل یک عدد داشته باشد.',
+            'password.symbols' => 'رمز عبور باید حداقل یک کاراکتر خاص (مانند !@#$) داشته باشد.',
+            'password.uncompromised' => 'این رمز عبور در یک نشت اطلاعات قبلی یافت شده است. لطفاً یک رمز عبور دیگر انتخاب کنید.',
         ];
     }
 
@@ -41,11 +60,11 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('phoneNumber', 'password'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'phoneNumber' => trans('auth.failed'),
             ]);
         }
 
@@ -68,7 +87,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'phoneNumber' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -80,6 +99,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('phoneNumber')).'|'.$this->ip());
     }
 }

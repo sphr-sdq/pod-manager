@@ -11,13 +11,17 @@ import {Link, useForm} from '@inertiajs/vue3'
 
 const isLoading = ref(false)
 
-async function onSubmit(event) {
-    event.preventDefault()
-    isLoading.value = true
+const loginForm = useForm({
+    phoneNumber : '',
+    password : ''
+})
 
-    setTimeout(() => {
-        isLoading.value = false
-    }, 3000)
+async function onSubmit() {
+
+    loginForm.post('/login' , {
+        onStart : () => isLoading.value = true,
+        onFinish : () => isLoading.value = false
+    })
 }
 </script>
 
@@ -37,29 +41,32 @@ async function onSubmit(event) {
             </h3>
         </div>
 
-        <form @submit="onSubmit">
+        <form @submit.prevent="onSubmit">
             <div class="grid gap-2">
                 <div class="grid gap-1">
-                    <Label class="" for="email">
+                    <Label class="" for="phoneNumber">
                         شماه موبایل
                     </Label>
                     <Input
+                        v-model="loginForm.phoneNumber"
                         id="phoneNumber"
-                        placeholder=""
+                        placeholder="09*********"
                         type="tel"
                         auto-capitalize="none"
-                        auto-complete="email"
                         auto-correct="off"
                         :disabled="isLoading"
                         dir="ltr"
                     />
+                    <span class="text-red-600 text-xs font-bold" v-if="loginForm.errors.phoneNumber">{{loginForm.errors.phoneNumber}}</span>
                 </div>
+
                 <div class="grid gap-1">
-                    <Label class="" for="email">
+                    <Label class="" for="password">
                         رمز عبور
                     </Label>
                     <Input
-                        id="email"
+                        v-model="loginForm.password"
+                        id="password"
                         placeholder=""
                         type="password"
                         auto-capitalize="none"
@@ -67,10 +74,13 @@ async function onSubmit(event) {
                         :disabled="isLoading"
                         dir="ltr"
                     />
+                    <span class="text-red-600 text-xs font-bold" v-if="loginForm.errors.password">{{loginForm.errors.password}}</span>
                 </div>
-                <Button :disabled="isLoading">
+                <Button @click="onSubmit" :disabled="isLoading">
                     <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin"/>
-                    ورود
+                    <span v-else>
+                        ورود
+                    </span>
                 </Button>
             </div>
         </form>
@@ -86,16 +96,16 @@ async function onSubmit(event) {
             </div>
         </div>
 
-        <p class=" text-sm text-muted-foreground">
-            در صورتی که رمز عبور خود را فراموش کرده‌اید برای ورود با رمز یکبار مصرف
-            <a
-                href="/terms"
-                class="underline underline-offset-4 hover:text-primary"
-            >
-                اینجا کلیک کنید.
-            </a>
+<!--        <p class=" text-sm text-muted-foreground">-->
+<!--            در صورتی که رمز عبور خود را فراموش کرده‌اید برای ورود با رمز یکبار مصرف-->
+<!--            <a-->
+<!--                href="/terms"-->
+<!--                class="underline underline-offset-4 hover:text-primary"-->
+<!--            >-->
+<!--                اینجا کلیک کنید.-->
+<!--            </a>-->
 
-        </p>
+<!--        </p>-->
         <p class="text-sm text-muted-foreground">
             هنوز اکانت ندارید ؟ برای ساخت اکانت
             <Link
@@ -106,6 +116,7 @@ async function onSubmit(event) {
             </Link>
             کنید.
         </p>
+
     </div>
 
 
