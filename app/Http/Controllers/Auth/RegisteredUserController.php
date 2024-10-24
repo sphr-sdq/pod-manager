@@ -32,7 +32,6 @@ class RegisteredUserController extends Controller
     public function createOTP(Request $request): void
     {
 
-        // TODO check if user already exist
 
 
         $validated = $request->validate([
@@ -124,6 +123,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('home', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 }

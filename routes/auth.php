@@ -1,14 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -39,6 +33,18 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/dashboard' , [DashboardController::class , "index" ])
+        ->middleware('verified')
+        ->name('dashboard');
+
+    Route::get('/dashboard/setting' , [\App\Http\Controllers\Dashboard\SettingController::class , "index" ])
+        ->middleware('verified')
+        ->name('dashboard-setting');
+
+    Route::get('/dashboard/pod' , [\App\Http\Controllers\Dashboard\Admin\PodController::class , "index" ])
+        ->middleware('verified')
+        ->name('dashboard-pod');
 //    Route::get('verify-email', EmailVerificationPromptController::class)
 //        ->name('verification.notice');
 //

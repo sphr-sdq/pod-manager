@@ -1,5 +1,5 @@
 <template>
-    <nav class=" fixed z-[999] bg-white w-full duration-150  translate-x-1/2 border border-b-black/20"
+    <nav class=" fixed z-[995] bg-white w-full duration-150  translate-x-1/2 border border-b-black/20"
          :class="{ 'nav-hidden': !showNavbar, 'nav-visible': showNavbar }">
         <div class="container ">
             <div class="grid grid-cols-12 p-2">
@@ -47,9 +47,10 @@
                         </Button>
                     </div>
                     <div v-else  class=" flex justify-end items-center gap-2">
-                        <Button variant="outline" @click.prevent="router.post('/logout')">
-                            خروج
-                        </Button>
+<!--                        <Button variant="outline" @click.prevent="router.post('/logout')">-->
+<!--                            خروج-->
+<!--                        </Button>-->
+                        <UserNav/>
                     </div>
 
                 </div>
@@ -75,6 +76,8 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Button } from '@/components/ui/button'
 import { router } from '@inertiajs/vue3'
+
+import UserNav from '../components/UserNav.vue';
 const components = [
     {
         title: 'Alert Dialog',
