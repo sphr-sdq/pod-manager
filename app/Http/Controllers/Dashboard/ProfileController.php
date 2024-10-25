@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class SettingController extends Controller
+class ProfileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +14,13 @@ class SettingController extends Controller
     public function index( Request $request)
     {
         if($request->user()->hasRole('admin')){
-            return Inertia::render('Dashboard/Admin/Setting' ,
+            return Inertia::render('Dashboard/Admin/Profile' ,
                  [
                     "bannerTitle" => "تنظیمات",
-                     "bannerBody" => ""
+                     "bannerBody" => "",
+                     "name" => $request->user()->name,
+                     "family" => $request->user()->family,
+                     "phoneNumber" => $request->user()->phoneNumber
                 ]);
         }else{
             abort(403);
@@ -30,15 +33,30 @@ class SettingController extends Controller
      */
     public function create()
     {
+
         //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         //
+        $verified = $request->validate([
+            'name' => 'required',
+            'family' => 'required'
+        ]
+        ,
+        [
+            'required' => "پر کردن این فیلد اجباری است"
+        ]);
+        $request->user()->update([
+            'name' => $verified['name'],
+            'family' => $verified['family']
+        ]);
+
+        return redirect()->back()->with('success', 'Name/Family updated successfully!');
     }
 
     /**

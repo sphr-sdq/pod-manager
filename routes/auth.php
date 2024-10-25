@@ -38,9 +38,12 @@ Route::middleware('auth')->group(function () {
         ->middleware('verified')
         ->name('dashboard');
 
-    Route::get('/dashboard/setting' , [\App\Http\Controllers\Dashboard\SettingController::class , "index" ])
+    Route::get('/dashboard/profile' , [\App\Http\Controllers\Dashboard\ProfileController::class , "index" ])
         ->middleware('verified')
-        ->name('dashboard-setting');
+        ->name('dashboard-profile');
+
+    Route::post('/dashboard/profile' , [\App\Http\Controllers\Dashboard\ProfileController::class , "store" ])
+        ->middleware('verified');
 
     Route::get('/dashboard/pod' , [\App\Http\Controllers\Dashboard\Admin\PodController::class , "index" ])
         ->middleware('verified')

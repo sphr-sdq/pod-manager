@@ -7,8 +7,8 @@ import {cn} from '@/lib/utils'
 
 const sidebarNavItems = [
     {
-        title: 'تنظیمات',
-        href: '/dashboard/setting',
+        title: 'پروفایل',
+        href: '/dashboard/profile',
     },
     {
         title: 'پاد‌ها',

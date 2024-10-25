@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         if($request->user()->hasRole('admin')){
-            return redirect('/dashboard/setting');
+            return redirect('/dashboard/profile');
         }elseif ($request->user()->hasRole('user')){
             return redirect('/dashboard/profile');
         }else{
