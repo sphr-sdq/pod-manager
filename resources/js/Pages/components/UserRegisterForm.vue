@@ -23,6 +23,7 @@ import {Link, router, useForm} from "@inertiajs/vue3";
 import Drawer from "../components/DemoDrawer.vue"
 import {useOtpState} from '@/composables/useOtpState'
 import {useOTPStore} from "@/stores/otp.js";
+import {PasswordInput} from "@/Components/ui/input-password/index.js";
 
 const useStore = useOTPStore()
 const {
@@ -343,15 +344,13 @@ const handleRegister = () => {
                         <Label class="" for="password">
                             رمز عبور
                         </Label>
-                        <Input
+                        <PasswordInput
                             v-model="password.password"
                             id="password"
                             placeholder=""
-                            type="password"
                             auto-capitalize="none"
                             auto-correct="off"
                             :disabled="isLoading"
-                            dir="ltr"
                         />
                             <div class="text-xs text-red-600 font-bold my-2" v-if="password.errors.password">
                                 {{password.errors.password }}

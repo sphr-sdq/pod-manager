@@ -5,6 +5,7 @@ import LucideSpinner from '~icons/lucide/loader-2'
 import {cn} from '@/lib/utils'
 import {Button} from '@/Components/ui/button'
 import {Input} from '@/Components/ui/input'
+import {PasswordInput} from "@/Components/ui/input-password/index.js";
 import {Label} from '@/Components/ui/label'
 import {Link, useForm} from '@inertiajs/vue3'
 
@@ -64,15 +65,14 @@ async function onSubmit() {
                     <Label class="" for="password">
                         رمز عبور
                     </Label>
-                    <Input
+                    <PasswordInput
                         v-model="loginForm.password"
                         id="password"
                         placeholder=""
-                        type="password"
                         auto-capitalize="none"
                         auto-correct="off"
                         :disabled="isLoading"
-                        dir="ltr"
+
                     />
                     <span class="text-red-600 text-xs font-bold" v-if="loginForm.errors.password">{{loginForm.errors.password}}</span>
                 </div>
