@@ -15,10 +15,10 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next , $role): Response
     {
+
         if (!$request->user() || !$request->user()->hasRole($role)) {
             return redirect()->route('dashboard')->with('error', 'Unauthorized access');
         }
-
         return $next($request);
     }
 }

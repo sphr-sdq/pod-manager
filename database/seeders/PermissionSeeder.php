@@ -13,11 +13,23 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'create-posts' => 'Create Posts',
-            'update-posts' => 'Update Posts',
-            'delete-posts' => 'Delete Posts',
-            'restore-posts' => 'Restore Posts',
-            'delete-posts-force' => 'Delete Posts Permanently',
+            'create-post' => 'Create Post',
+            'update-post' => 'Update Post',
+            'delete-post' => 'Delete Post',
+            'restore-post' => 'Restore Post',
+            'delete-post-force' => 'Delete Post Permanently',
+
+            'create-pod' => 'Create Pod',
+            'update-pod' => 'Update Pod',
+            'delete-pod' => 'Delete Pod',
+            'restore-pod' => 'Restore Pod',
+            'delete-pod-force' => 'Delete Pod Permanently',
+
+            'create-tag' => 'Create Tag',
+            'update-tag' => 'Update Tag',
+            'delete-tag' => 'Delete Tag',
+            'restore-tag' => 'Restore Tag',
+            'delete-tag-force' => 'Delete Tag Permanently',
         ];
 
         foreach ($permissions as $slug => $name) {

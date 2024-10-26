@@ -11,6 +11,10 @@ const sidebarNavItems = [
         href: '/dashboard/profile',
     },
     {
+        title: 'تگ ها',
+        href: '/dashboard/tag',
+    },
+    {
         title: 'پاد‌ها',
         href: '/dashboard/pod',
     },

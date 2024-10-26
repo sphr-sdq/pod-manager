@@ -48,6 +48,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/pod' , [\App\Http\Controllers\Dashboard\Admin\PodController::class , "index" ])
         ->middleware('verified')
         ->name('dashboard-pod');
+
+    Route::get('/dashboard/tag' , [\App\Http\Controllers\Dashboard\Admin\TagController::class , 'create'])
+        ->middleware(['verified' , 'role:admin'])
+        ->name('dashboard-tag');
 //    Route::get('verify-email', EmailVerificationPromptController::class)
 //        ->name('verification.notice');
 //

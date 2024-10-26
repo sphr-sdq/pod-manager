@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Post;
+use App\Models\Tags;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class Posts
+class TagsPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -20,7 +20,7 @@ class Posts
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Post $post): bool
+    public function view(User $user, Tags $tags): bool
     {
         //
         return true;
@@ -31,42 +31,44 @@ class Posts
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('create-post');
+        //
+        ds($user->hasPermission('create-tag'));
+        return $user->hasPermission('create-tag');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Post $post): bool
+    public function update(User $user, Tags $tags): bool
     {
         //
-        return $user->hasPermission('update-post');
+        return $user->hasPermission('update-tag');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Post $post): bool
+    public function delete(User $user, Tags $tags): bool
     {
         //
-        return $user->hasPermission('delete-post');
+        return $user->hasPermission('delete-tag');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Post $post): bool
+    public function restore(User $user, Tags $tags): bool
     {
         //
-        return $user->hasPermission('restore-post');
+        return $user->hasPermission('restore-tag');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Post $post): bool
+    public function forceDelete(User $user, Tags $tags): bool
     {
         //
-        return $user->hasPermission('delete-post-force');
+        return $user->hasPermission('delete-tag-force');
     }
 }
