@@ -52,6 +52,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/tag' , [\App\Http\Controllers\Dashboard\Admin\TagController::class , 'create'])
         ->middleware(['verified' , 'role:admin'])
         ->name('dashboard-tag');
+
+    Route::post('/dashboard/tag' , [\App\Http\Controllers\Dashboard\Admin\TagController::class , 'store'])
+        ->middleware(['verified' , 'role:admin']);
+
 //    Route::get('verify-email', EmailVerificationPromptController::class)
 //        ->name('verification.notice');
 //

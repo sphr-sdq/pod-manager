@@ -17,8 +17,8 @@ const props = defineProps({
 })
 
 const form = useForm({
-    name: props.name ?? null,
-    family: props.family ?? null
+    name: props.name ?? '',
+    family: props.family ?? ''
 })
 
 

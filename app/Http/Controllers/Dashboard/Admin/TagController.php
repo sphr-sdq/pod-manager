@@ -8,6 +8,7 @@ use Illuminate\Container\Attributes\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use function Symfony\Component\Translation\t;
 
 class TagController extends Controller
 {
@@ -35,9 +36,22 @@ class TagController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         //
+        Gate::authorize('create', Tags::class);
+
+        $validated = $request->validate([
+            'tag' => 'required'
+        ] ,
+        [ 'required' => 'فیلد تگ اجباری است.']
+        );
+
+        $tag = new Tags;
+        $tag->name = $validated['tag'];
+        $tag->save();
+
+        return redirect()->back()->with('success', 'Tag Saved successfully!');
     }
 
     /**

@@ -32,7 +32,6 @@ class TagsPolicy
     public function create(User $user): bool
     {
         //
-        ds($user->hasPermission('create-tag'));
         return $user->hasPermission('create-tag');
     }
 
