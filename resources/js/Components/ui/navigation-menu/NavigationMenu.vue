@@ -31,6 +31,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 
 <template>
   <NavigationMenuRoot
+      dir="rtl"
     v-bind="forwarded"
     :class="
       cn(

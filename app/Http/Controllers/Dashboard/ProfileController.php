@@ -23,7 +23,15 @@ class ProfileController extends Controller
                      "phoneNumber" => $request->user()->phoneNumber
                 ]);
         }else{
-            abort(403);
+            return Inertia::render('Dashboard/User/Profile' ,
+                [
+                    "bannerTitle" => "تنظیمات",
+                    "bannerBody" => "",
+                    "name" => $request->user()->name,
+                    "family" => $request->user()->family,
+                    "phoneNumber" => $request->user()->phoneNumber
+                ]);
+//            abort(403);
         }
 
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="relative w-full overflow-hidden" :style="{ height }">
+    <div class="relative w-full overflow-hidden" :style="{ height } ">
         <!-- Increased padding wrapper for better coverage -->
         <div class="absolute inset-0 p-[80px]">
             <!-- Canvas container with increased negative margin -->

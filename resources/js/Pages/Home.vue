@@ -12,10 +12,10 @@ import Hero from "./components/Hero.vue"
 
     </section>
     <section>
-        <main class="container ">
+        <main class="container">
             <div class="h-20"></div>
-            <div class="max-w-6xl mx-auto">
-                <Hero height="600px">
+            <div class=" mx-auto">
+                <Hero height="610px">
                     <div class="mx-auto p-8">
                         <h1 class="text-4xl font-bold text-white">مثل ابر</h1>
                         <p class="text-white"></p>

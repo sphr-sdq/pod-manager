@@ -29,7 +29,9 @@ class TagController extends Controller
 
         Gate::authorize('create', Tags::class);
 
-        return Inertia::render('Dashboard/Admin/Tag');
+        return Inertia::render('Dashboard/Admin/Tag' , [
+            'tags' => Tags::all()
+        ]);
 
     }
 
@@ -73,16 +75,32 @@ class TagController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tags $tags)
+    public function update(Request $request, $id)
     {
-        //
+        Gate::authorize('update' ,Tags::where('id' ,'=' , $id)->first() );
+
+        $validated =  $request->validate([
+            'newValue' => 'required'
+        ],
+        [
+            'required' => 'مقدار این فیلد اجباری است'
+        ]);
+
+        $tag = Tags::where('id' ,'=' , $id)->first();
+        $tag->name = $validated['newValue'];
+        $tag->save();
+
+        return redirect()->back()->with('success', 'Tag Updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tags $tags)
+    public function destroy($id)
     {
-        //
+
+        Gate::authorize('delete' ,Tags::where('id' ,'=' , $id)->first() );
+        Tags::where('id' ,'=' , $id)->first()->delete();
+        return redirect()->back()->with('success', 'Tag Deleted successfully!');
     }
 }

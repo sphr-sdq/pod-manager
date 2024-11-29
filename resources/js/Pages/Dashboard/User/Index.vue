@@ -1,5 +1,5 @@
 <script setup>
-import AdminSidebarNav from "@/Pages/Dashboard/Admin/Layout/AdminSidebarNav.vue";
+import UserSidebarNav from "@/Pages/Dashboard/User/Layout/UserSidebarNav.vue";
 import {Separator} from "@/Components/ui/separator"
 import {useToast} from '@/components/ui/toast/use-toast'
 import Toaster from "../../../Components/ui/toast/Toaster.vue";
@@ -40,7 +40,7 @@ provideToast ((data) => {
             <Separator class="my-6" />
             <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
                 <aside class="mx-4 lg:w-1/5">
-                    <AdminSidebarNav/>
+                    <UserSidebarNav/>
                 </aside>
                 <div class="flex-1 lg:max-w-2xl">
                     <div class="space-y-6">

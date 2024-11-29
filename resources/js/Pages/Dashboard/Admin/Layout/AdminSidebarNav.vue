@@ -23,10 +23,6 @@ const sidebarNavItems = [
         href: '/dashboard/pots',
     },
     {
-        title: 'سرور ها',
-        href: '/dashboard/servers',
-    },
-    {
         title: 'کاربران',
         href: '/dashboard/users',
     },

@@ -56,6 +56,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/tag' , [\App\Http\Controllers\Dashboard\Admin\TagController::class , 'store'])
         ->middleware(['verified' , 'role:admin']);
 
+    Route::delete('/dashboard/tag/{id}' , [\App\Http\Controllers\Dashboard\Admin\TagController::class ,'destroy'])
+        ->middleware(['verified' , 'role:admin']);
+
+    Route::patch('/dashboard/tag/{id}' , [\App\Http\Controllers\Dashboard\Admin\TagController::class ,'update'])
+        ->middleware(['verified' , 'role:admin']);
+
+    Route::get('/dashboard/projects' , [\App\Http\Controllers\Dashboard\User\UserProjectController::class ,'create'])
+        ->middleware(['verified','role:user']);
+
+    Route::post('/dashboard/projects' , [\App\Http\Controllers\Dashboard\User\UserProjectController::class ,'store'])
+        ->middleware(['verified','role:user']);
+    Route::get('/dashboard/project/{slug}' ,[\App\Http\Controllers\Dashboard\User\UserProjectController::class, 'createProject'])
+        ->middleware(['verified','role:user']);
+
+
 //    Route::get('verify-email', EmailVerificationPromptController::class)
 //        ->name('verification.notice');
 //

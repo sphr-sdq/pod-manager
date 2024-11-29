@@ -16,6 +16,7 @@ import {Input} from "@/Components/ui/input/index.js";
 import {Button} from "@/Components/ui/button/index.js";
 import {Label} from "@/Components/ui/label/index.js";
 import {LoaderCircle} from 'lucide-vue-next';
+import DeleteTagButton from '@/Pages/components/DeleteTagButton.vue';
 
 const form = useForm({
     tag: ''
@@ -23,6 +24,10 @@ const form = useForm({
 const emitToast = useToast()
 
 const isLoading = ref(false)
+
+defineProps({
+    tags : Array
+})
 
 
 const handleRequest = () => {
@@ -74,6 +79,12 @@ const handleRequest = () => {
             </div>
         </div>
     </form>
+    <div class="flex gap-2">
+        <DeleteTagButton v-for="tag in tags" :content="tag" />
+    </div>
+
+
+
 </template>
 
 <style scoped>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateProfilePicture;
 use App\Models\otpModel;
+use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Exceptions\OtpTimeoutException;
@@ -117,6 +118,9 @@ class RegisteredUserController extends Controller
             'phoneNumber' => $validated['phoneNumber'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        $default_role = Role::where('slug' , 'user')->first();
+        $user->roles()->attach($default_role->id);
 
 //        GenerateProfilePicture::dispatch($user)->onQueue('profile-pictures');
         event(new Registered($user));

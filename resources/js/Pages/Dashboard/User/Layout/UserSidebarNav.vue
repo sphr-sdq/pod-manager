@@ -1,11 +1,38 @@
-<script setup>
+<script setup lang="js">
+import {Button} from '@/Components/ui/button'
+import {Link} from '@inertiajs/vue3'
+import {cn} from '@/lib/utils'
 
+
+
+const sidebarNavItems = [
+    {
+        title: 'پروفایل',
+        href: '/dashboard/profile',
+    },
+    {
+        title: 'پروژه‌ها',
+        href: '/dashboard/projects',
+    },
+]
 </script>
 
 <template>
-
+    <nav class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+        <Link
+            v-for="item in sidebarNavItems"
+            :key="item.title"
+            :href="item.href"
+            preserve-scroll
+        >
+            <Button
+                as="a"
+                variant="ghost"
+                class="w-full text-left justify-start"
+                :class="{ 'bg-muted hover:bg-muted' :  $page.url === item.href}"
+            >
+                {{ item.title }}
+            </Button>
+        </Link>
+    </nav>
 </template>
-
-<style scoped>
-
-</style>
