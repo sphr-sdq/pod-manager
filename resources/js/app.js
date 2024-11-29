@@ -6,6 +6,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { createPinia } from 'pinia'
+import wysiwyg from "vue-wysiwyg";
 
 
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
@@ -28,6 +29,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(PerfectScrollbarPlugin)
             .use(pinia)
+            .use(wysiwyg, {})
             .mount(el);
     },
     progress: {

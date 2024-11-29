@@ -1,12 +1,97 @@
 <script>
 import Index from './Index.vue'
+
 export default {
     layout: Index
 }
 </script>
 
+<script setup >
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { reactive } from 'vue'
+import { router } from '@inertiajs/vue3'
+import MultiSelect from '@/Pages/components/MultiSelect.vue'
+import { ref , watch } from 'vue'
+
+const form = reactive({
+    title: null,
+    image: null,
+    description: null,
+    template : null,
+    parameters : null
+})
+
+var props =  defineProps({
+    tags : Array
+})
+
+const options = ref(props.tags.map(t => ({
+    value: t["slug"],
+    label: t["name"]
+})));
+const selectedValues = ref([]);
+
+
+function submit() {
+    router.post('/dashboard/pod', form , {
+        forceFormData: true,
+    })
+}
+</script>
+
 <template>
-    <h1>Pods</h1>
+
+
+    <form class="flex flex-col gap-5"  @submit.prevent="submit" enctype="multipart/form-data">
+
+
+    <div class="flex gap-4">
+
+
+    <div class="grid w-full max-w-sm items-center gap-1.5">
+        <Label for="title">عنوان</Label>
+        <Input id="title"  placeholder="عنوان"  v-model="form.title" />
+    </div>
+
+    <div class="grid w-full max-w-sm items-center gap-1.5">
+        <Label for="picture">تصویر</Label>
+        <Input id="picture" type="file" @input="form.image = $event.target.files[0]"  />
+    </div>
+    </div>
+    <div class="grid w-full gap-1.5">
+        <Label for="description">توضیحات</Label>
+        <Textarea id="description" placeholder="توضیحات را وارد کنید" v-model="form.description" />
+<!--        <p class="text-sm text-muted-foreground">-->
+<!--            Your message will be copied to the support team.-->
+<!--        </p>-->
+    </div>
+    <div class="grid w-full gap-1.5">
+        <Label for="template">قالب برنامه به فرمت yml</Label>
+        <Textarea id="template" placeholder="قالب برنامه را وارد کنید" dir="ltr" v-model="form.template" />
+        <!--        <p class="text-sm text-muted-foreground">-->
+        <!--            Your message will be copied to the support team.-->
+        <!--        </p>-->
+    </div>
+    <div class="grid w-full gap-1.5">
+        <Label for="parameters">پارامتر‌ها‌ی مورد نیاز را وارد کنید فرمت json</Label>
+        <Textarea id="parameters" placeholder="پارامتر‌ها مورد نیاز" dir="ltr" v-model="form.parameters" />
+        <!--        <p class="text-sm text-muted-foreground">-->
+        <!--            Your message will be copied to the support team.-->
+        <!--        </p>-->
+    </div>
+        <MultiSelect
+            :options="options"
+            placeholder="تگ"
+            v-model="selectedValues"
+            :maxCount="2"
+        />
+    <Button variant="outline" type="submit">
+        ثبت پروژه
+    </Button>
+    </form>
 </template>
 
 <style scoped>

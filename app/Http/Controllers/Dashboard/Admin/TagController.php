@@ -7,6 +7,7 @@ use App\Models\Tags;
 use Illuminate\Container\Attributes\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use function Symfony\Component\Translation\t;
 
@@ -30,6 +31,8 @@ class TagController extends Controller
         Gate::authorize('create', Tags::class);
 
         return Inertia::render('Dashboard/Admin/Tag' , [
+            "bannerBody"=> "در این قسمت می‌توانید تگ‌ها را مدیریت کنید",
+            "bannerTitle" => "تگ‌ها",
             'tags' => Tags::all()
         ]);
 
@@ -51,6 +54,7 @@ class TagController extends Controller
 
         $tag = new Tags;
         $tag->name = $validated['tag'];
+        $tag->slug = Str::slug($validated['tag']);
         $tag->save();
 
         return redirect()->back()->with('success', 'Tag Saved successfully!');

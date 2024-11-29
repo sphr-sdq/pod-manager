@@ -49,6 +49,9 @@ Route::middleware('auth')->group(function () {
         ->middleware('verified')
         ->name('dashboard-pod');
 
+    Route::post('/dashboard/pod' , [\App\Http\Controllers\Dashboard\Admin\PodController::class , "store"])
+        ->middleware(['verified' , 'role:admin']);
+
     Route::get('/dashboard/tag' , [\App\Http\Controllers\Dashboard\Admin\TagController::class , 'create'])
         ->middleware(['verified' , 'role:admin'])
         ->name('dashboard-tag');

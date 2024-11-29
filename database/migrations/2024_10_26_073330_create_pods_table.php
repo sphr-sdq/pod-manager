@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('pods', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug');
-            $table->json('setting');
+            $table->text('name');
+            $table->text('slug');
+            $table->text('image_path');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->text('description');
+            $table->text('template');
+            $table->text('parameters')->nullable();
             $table->timestamps();
         });
     }

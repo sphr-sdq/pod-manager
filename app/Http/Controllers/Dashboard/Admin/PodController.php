@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Dashboard\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tags;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class PodController extends Controller
@@ -17,7 +19,8 @@ class PodController extends Controller
             return Inertia::render('Dashboard/Admin/Pod' ,
                 [
                     "bannerTitle" => "اضافه کردن برنامه جدید",
-                    "bannerBody" => ""
+                    "bannerBody" => "در اینجا می‌توانید پروژه‌ی جدید تعریف کنید",
+                    "tags" => Tags::all()->select(['name' , 'slug'])
                 ]);
         }else{
             abort(403);
@@ -27,9 +30,9 @@ class PodController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
     }
 
     /**
@@ -38,6 +41,18 @@ class PodController extends Controller
     public function store(Request $request)
     {
         //
+
+
+        $validated = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Example: 2MB max size
+        ]);
+        ds($validated);
+        // Generate a unique filename
+        $uniqueFileName = Str::uuid() . '.' . $request->file('image')->extension();
+
+        // Store the file
+        $path = $request->file('image')->storeAs('uploads', $uniqueFileName, 'public');
+
     }
 
     /**

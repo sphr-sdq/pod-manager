@@ -15,12 +15,8 @@ const sidebarNavItems = [
         href: '/dashboard/tag',
     },
     {
-        title: 'پاد‌ها',
+        title: 'پروژه جدید',
         href: '/dashboard/pod',
-    },
-    {
-        title: 'پست ها',
-        href: '/dashboard/pots',
     },
     {
         title: 'کاربران',

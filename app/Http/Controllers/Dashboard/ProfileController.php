@@ -17,7 +17,7 @@ class ProfileController extends Controller
             return Inertia::render('Dashboard/Admin/Profile' ,
                  [
                     "bannerTitle" => "تنظیمات",
-                     "bannerBody" => "",
+                     "bannerBody" => "در این قسمت می‌توانید مشخصات کاربری خود را تغییر دهید",
                      "name" => $request->user()->name,
                      "family" => $request->user()->family,
                      "phoneNumber" => $request->user()->phoneNumber
@@ -26,7 +26,7 @@ class ProfileController extends Controller
             return Inertia::render('Dashboard/User/Profile' ,
                 [
                     "bannerTitle" => "تنظیمات",
-                    "bannerBody" => "",
+                    "bannerBody" => "در این قسمت می‌توانید مشخصات کاربری خود را تغییر دهید",
                     "name" => $request->user()->name,
                     "family" => $request->user()->family,
                     "phoneNumber" => $request->user()->phoneNumber

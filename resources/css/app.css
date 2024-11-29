@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
 /* these are necessary styles for vue flow */
 @import '@vue-flow/core/dist/style.css';
 
