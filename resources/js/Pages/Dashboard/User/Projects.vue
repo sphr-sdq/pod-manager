@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/dialog'
 import {
     Card,
-    CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
@@ -70,11 +69,11 @@ function submit() {
 
             </div>
             <DialogFooter class="sm:justify-start">
-
+                <DialogClose as-child>
                     <Button type="button" size="sm" class="px-3" @click="submit">
                         ثبت
                     </Button>
-                <DialogClose as-child>
+
                     <Button type="button" variant="secondary">
                         انصراف
                     </Button>

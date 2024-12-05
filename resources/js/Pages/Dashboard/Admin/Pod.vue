@@ -15,8 +15,9 @@ import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
 import MultiSelect from '@/Pages/components/MultiSelect.vue'
 import { ref , watch } from 'vue'
+import { useForm } from '@inertiajs/vue3'
 
-const form = reactive({
+const form = useForm({
     title: null,
     image: null,
     description: null,
@@ -36,7 +37,11 @@ const selectedValues = ref([]);
 
 
 function submit() {
-    router.post('/dashboard/pod', form , {
+    console.log(selectedValues.value)
+    form.transform((data) => ({
+        ...data,
+        tags : selectedValues.value
+    })).post('/dashboard/pod', {
         forceFormData: true,
     })
 }

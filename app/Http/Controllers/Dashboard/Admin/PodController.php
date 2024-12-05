@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pods;
 use App\Models\Tags;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -40,18 +41,32 @@ class PodController extends Controller
      */
     public function store(Request $request)
     {
-        //
-
-
         $validated = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Example: 2MB max size
+            'title' => 'required',
+            'description' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'template' => 'required',
+            'parameters' => 'required',
+            'tags' => 'array'
         ]);
-        ds($validated);
-        // Generate a unique filename
-        $uniqueFileName = Str::uuid() . '.' . $request->file('image')->extension();
 
-        // Store the file
+     
+        $uniqueFileName = Str::uuid() . '.' . $request->file('image')->extension();
         $path = $request->file('image')->storeAs('uploads', $uniqueFileName, 'public');
+        $pod = Pods::create([
+            "name" => $validated['title'],
+            "slug" => Str::slug($validated['title']),
+            "image_path" => $path,
+            "user_id" => $request->user()->id,
+            'description' => $validated['description'],
+            'template' => $validated['template'],
+            'parameters' => $validated['parameters'],
+        ]);
+
+        foreach ($request['tags'] as $tag) {
+            $tagRecord = Tags::where('slug', $tag)->first();
+            $pod->tags()->attach($tagRecord->id);
+        }
 
     }
 

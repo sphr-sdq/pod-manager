@@ -68,9 +68,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/projects' , [\App\Http\Controllers\Dashboard\User\UserProjectController::class ,'create'])
         ->middleware(['verified','role:user']);
 
+    Route::post('/dashboard/get_projects' , [\App\Http\Controllers\Dashboard\User\UserProjectController::class ,'index'])
+        ->middleware(['verified','role:user']);
+
     Route::post('/dashboard/projects' , [\App\Http\Controllers\Dashboard\User\UserProjectController::class ,'store'])
         ->middleware(['verified','role:user']);
-    Route::get('/dashboard/project/{slug}' ,[\App\Http\Controllers\Dashboard\User\UserProjectController::class, 'createProject'])
+
+    Route::get('/dashboard/project/{slug}' ,[\App\Http\Controllers\ProjectsController::class, 'index'])
         ->middleware(['verified','role:user']);
 
 

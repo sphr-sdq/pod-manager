@@ -53,10 +53,12 @@ watch(
 
 
 watch(selectedValues, (newValues) => {
+    console.log('fff')
     if (JSON.stringify(newValues) !== JSON.stringify(props.modelValue)) {
+
         emit('update:modelValue', newValues);
     }
-});
+}, {deep: true});
 const togglePopover = () => {
     isPopoverOpen.value = !isPopoverOpen.value;
 };
@@ -127,9 +129,9 @@ const remainingCount = computed(() => {
             </PopoverTrigger>
             <PopoverContent>
                 <Command>
-                    <CommandInput v-model="search" placeholder="Search..."/>
+                    <CommandInput v-model="search" placeholder="جستوجو..."/>
                     <CommandList>
-                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandEmpty>نتیجه ای یافت نشد</CommandEmpty>
                         <CommandGroup>
                             <CommandItem
                                 v-for="option in filteredOptions"

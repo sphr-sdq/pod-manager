@@ -4,14 +4,24 @@ namespace App\Http\Controllers\Dashboard\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\namespaces;
+use App\Models\Pods;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use function Pest\Laravel\json;
 
 class UserProjectController extends Controller
 {
+
+    public function index(Request $request)
+    {
+
+        return response()->json([
+            'parameters'=> Pods::where('slug' , $request['slug'])->first()->parameters
+        ]);
+    }
     public function create(Request $request)
     {
 
@@ -64,15 +74,5 @@ class UserProjectController extends Controller
         if (!$response->successful()) {
             throw new \Exception('Failed to create Kubernetes namespace: ' . $response->body());
         }
-    }
-    public function createProject(Request $request , $slug)
-    {
-        $project = $request->user()->projects()->where('slug' , $slug)->first();
-
-        return Inertia::render('Dashboard/User/Project' , [
-            'bannerTitle' => $project->name,
-            'bannerBody' => 'در این قسمت می‌توانید پروژه‌ی خود را مدیریت کنید و برای دیپلوی برنالمه‌ها اقدام کنید',
-
-        ]);
     }
 }

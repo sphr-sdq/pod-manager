@@ -15,9 +15,8 @@ use function Termwind\render;
 //    ]);
 //});
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
+Route::get('/', [\App\Http\Controllers\HomeController::class , 'index'])
+        ->name('home');
 
 //Route::get('/dashboard', function () {
 //    return Inertia::render('Dashboard');
