@@ -75,4 +75,25 @@ class UserProjectController extends Controller
             throw new \Exception('Failed to create Kubernetes namespace: ' . $response->body());
         }
     }
+
+    public function destroy(Request $request , $id)
+    {
+        $res = namespaces::where("id" ,"=" ,$id)->first();
+        $this->deleteKubernetesNamespace($res->slug);
+        $res->delete();
+        if ($res){
+            redirect()->back()->with('success', 'project deleted successfully!');
+        }
+    }
+
+    private function deleteKubernetesNamespace($slug)
+    {
+        $response = Http::post('localhost:8080/delete-namespace', [
+            'Name' => $slug
+        ]);
+
+        if (!$response->successful()) {
+            throw new \Exception('Failed to create Kubernetes namespace: ' . $response->body());
+        }
+    }
 }

@@ -51,6 +51,11 @@ class User extends Authenticatable
         return $this->hasMany(namespaces::class);
     }
 
+    public function project()
+    {
+        return $this->hasOne(Projects::class);
+    }
+
     public function hasPermission($permission) {
         return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
             $query->where('slug', $permission);

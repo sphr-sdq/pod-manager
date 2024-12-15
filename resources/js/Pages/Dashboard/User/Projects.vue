@@ -24,22 +24,42 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Trash2 } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-defineProps({
-    projects : Array
+var props =  defineProps({
+    projects : Array,
 })
 
 
 const new_project = reactive({
     name : null
 })
+
 function submit() {
-    router.post('/dashboard/projects', new_project)
+    router.post('/dashboard/projects', new_project , {
+        onSuccess : () => {new_project.name = null}
+    })
 }
+
+function destroy(id) {
+    router.delete(`/dashboard/projects/${id}`)
+}
+
 </script>
 
 <template>
@@ -69,7 +89,7 @@ function submit() {
 
             </div>
             <DialogFooter class="sm:justify-start">
-                <DialogClose as-child>
+                <DialogClose class="flex gap-2">
                     <Button type="button" size="sm" class="px-3" @click="submit">
                         ثبت
                     </Button>
@@ -85,14 +105,42 @@ function submit() {
     <Card v-if="projects.length > 0" v-for="project in projects">
         <CardHeader>
             <CardTitle>{{project.name}}</CardTitle>
-            <CardDescription>{{new Date(project.updated_at).toLocaleString('en-US', {
+            <CardDescription class="flex justify-between items-center">
+                <div>
+
+
+                {{new Date(project.updated_at).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'long', // e.g., "November"
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
-            }) }}</CardDescription>
+                second: '2-digit'}) }}
+                </div>
+                <div>
+
+
+                    <AlertDialog >
+                        <AlertDialogTrigger>
+                            <Button variant="outline" size="icon">
+                                <Trash2 class="w-4 h-4" />
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent >
+                            <AlertDialogHeader>
+                                <AlertDialogTitle class="text-right">از حذف پروژه {{project.name}} اطمینان دارید ؟</AlertDialogTitle>
+                                <AlertDialogDescription class="text-right">
+                                    این عمل همیشگی و غیرقابل بازگشت است. با حذف پروژه تمام منابع مربوط به آن نیز برای همیشه حذف می‌گردد.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel >انصراف</AlertDialogCancel>
+                                <AlertDialogAction @click.prevent="() => destroy(project.id)">حذف</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
+            </CardDescription>
         </CardHeader>
 
         <CardFooter>
