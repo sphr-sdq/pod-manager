@@ -28,7 +28,7 @@ class UserProjectController extends Controller
         return Inertia::render('Dashboard/User/Projects' , [
             'bannerTitle' => 'پروژه‌ها',
             'bannerBody' => 'در این قسمت می‌توانید پروژه‌ی جدید تعریف کنید',
-            'projects' => auth()->user()->projects()->select('id', 'name', 'slug', 'updated_at')->get()
+            'projects' => auth()->user()->projects()->select('id', 'name', 'slug', 'updated_at')->orderBy('updated_at', 'desc')->get()
         ]);
 
     }

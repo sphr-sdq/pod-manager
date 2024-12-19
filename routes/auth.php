@@ -83,6 +83,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/project/{slug}' ,[\App\Http\Controllers\Dashboard\User\ProjectsController::class , 'store'])
         ->middleware(['verified','role:user']);
 
+    Route::post('/dashboard/project/{slug}/store_domain' ,[\App\Http\Controllers\Dashboard\User\ProjectsController::class , 'store_domain'])
+        ->middleware(['verified','role:user']);
+
+    Route::delete('/dashboard/project/{slug}/delete_domain/{id}' ,[\App\Http\Controllers\Dashboard\User\ProjectsController::class , 'delete_domain'])
+        ->middleware(['verified','role:user']);
+
+    Route::patch('/dashboard/project/{slug}' ,[\App\Http\Controllers\Dashboard\User\ProjectsController::class , 'update_resource'])
+        ->middleware(['verified','role:user']);
+
 
 //    Route::get('verify-email', EmailVerificationPromptController::class)
 //        ->name('verification.notice');
