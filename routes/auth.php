@@ -91,6 +91,8 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/dashboard/project/{slug}' ,[\App\Http\Controllers\Dashboard\User\ProjectsController::class , 'update_resource'])
         ->middleware(['verified','role:user']);
+    Route::get('/dashboard/project/{slug}/certificate' , [\App\Http\Controllers\Dashboard\User\ProjectsController::class , 'certificate'])
+        ->middleware(['verified','role:user']);
 
 
 //    Route::get('verify-email', EmailVerificationPromptController::class)

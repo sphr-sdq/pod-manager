@@ -14,11 +14,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ichtrojan\Otp\Otp;
+use Ipe\Sdk\Facades\SmsIr;
+
 
 class RegisteredUserController extends Controller
 {
@@ -56,8 +59,21 @@ class RegisteredUserController extends Controller
         }
 
         $otp = (new Otp)->generate($validated["phoneNumber"], 'numeric', 5, 15);
-        ds($otp);
 
+
+
+        $mobile = $validated["phoneNumber"];
+        $templateId = 894537;
+        $parameters = [
+            [
+                "name" => "code",
+                "value" => $otp->token
+            ]
+        ];
+//        ds($parameters);
+        $response = SmsIr::verifySend($mobile, $templateId, $parameters);
+
+//        ds($response);
     }
 
     public function verify(Request $request)
@@ -72,7 +88,7 @@ class RegisteredUserController extends Controller
                 "size" => "کد به درستی وارد نشده است."
             ]);
         $check = (new Otp)->validate($validated['phoneNumber'], $validated['otpCode']);
-        ds($check);
+//        ds($check);
         if (!$check->status) {
             if ($check->message === "OTP is not valid") {
                 throw  ValidationException::withMessages([

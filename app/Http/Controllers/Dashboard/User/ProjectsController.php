@@ -157,6 +157,19 @@ class ProjectsController extends Controller
             throw new \Exception('Failed to update resources: ' . $response->body());
         }
     }
+
+    public function certificate($slug){
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->get("http://localhost:8080/certificates", [
+            'namespace' => $slug,
+        ]);
+        if ($response->successful()) {
+            return response()->json($response->json(), 200);
+        } else {
+            return response()->json(['error' => $response->body()], $response->status());
+        }
+    }
     /**
      * Display the specified resource.
      */

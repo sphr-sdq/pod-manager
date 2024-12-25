@@ -35,6 +35,8 @@ import {parseJSON} from "confbox";
 import {Pencil} from 'lucide-vue-next';
 import {Settings} from 'lucide-vue-next';
 import {CircleX} from 'lucide-vue-next';
+import { LoaderCircle } from 'lucide-vue-next';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -55,6 +57,8 @@ var modal = ref(false)
 var domain_modal = ref(false)
 var update_modal = ref(false)
 var domain_val = ref(null)
+var certificates = ref([]);
+var groupedCertificates = ref([]);
 
 var data = reactive({})
 
@@ -117,6 +121,7 @@ function submit() {
         onSuccess: () => {
             data2 = res.user_params;
             modal.value = !modal.value;
+            fetchCertificateStatus();
         },
         onError: () => {
 
@@ -142,7 +147,8 @@ function submit_domain() {
     }, {
         onSuccess: () => {
             domain_modal.value = !domain_modal.value;
-            domain_val.value = ""
+            domain_val.value = "";
+            fetchCertificateStatus();
         },
         onError: (msg) => {
 
@@ -150,22 +156,60 @@ function submit_domain() {
     })
 }
 
-onMounted(()=>{
-    data2 =  data2 = props.projects && props.projects.parameters
+onMounted(() => {
+    fetchCertificateStatus();
+
+    data2 = data2 = props.projects && props.projects.parameters
         ? JSON.parse(props.projects.parameters).user_params
         : {};
 })
 
-function apply(){
-    router.patch(`/dashboard/project/${props.slug}` , {
+async function fetchCertificateStatus() {
+    try {
+        const namespace = JSON.parse(props.projects.parameters).user_namespace;
+        const response = await axios.get(
+            `/dashboard/project/${namespace}/certificate`
+        );
+        certificates.value = response.data;
+
+        const grouped = {};
+        certificates.value.forEach(cert => {
+            const dnsName = cert.dnsNames[0];
+            if (!grouped[dnsName]) {
+                grouped[dnsName] = {dnsName, status: false};
+            }
+            if (cert.status === "True") {
+                grouped[dnsName].status = true;
+            }
+        });
+
+        groupedCertificates.value = Object.values(grouped).map(cert => ({
+            dnsNames: cert.dnsName,
+            status: cert.status ? "True" : "False",
+        }));
+
+        const allReady = groupedCertificates.value.every(cert => cert.status === "True");
+        if (!allReady ) {
+            setTimeout(fetchCertificateStatus, 5000);
+        } else {
+            // this.loading = false;
+        }
+    } catch (err) {
+        // this.error = err.message || "Failed to fetch certificate status.";
+        // this.loading = false;
+    }
+}
+
+function apply() {
+    router.patch(`/dashboard/project/${props.slug}`, {
         "app_id": JSON.parse(props.projects.parameters).app_id,
-        "user_params" : Object.fromEntries(
+        "user_params": Object.fromEntries(
             Object.entries(data2).map(([key, value]) => [key, String(value)])
         ),
         "user_namespace": JSON.parse(props.projects.parameters).user_namespace,
-        "project_id" : props.projects.id
-    } , {
-        onSuccess : () => {
+        "project_id": props.projects.id
+    }, {
+        onSuccess: () => {
             update_modal.value = !update_modal.value
         }
     })
@@ -174,6 +218,7 @@ function apply(){
 </script>
 
 <template>
+
     <template v-if="projects.length === 0">
         <Card>
             <CardHeader>
@@ -266,17 +311,18 @@ function apply(){
                     </DialogDescription>
                 </DialogHeader>
                 <div class="grid gap-4 py-4 overflow-y-auto px-6">
-                    <div class="grid grid-cols-6 items-center gap-4" v-for="(field , i) in JSON.parse(projects.pod.parameters).user_parameters"
+                    <div class="grid grid-cols-6 items-center gap-4"
+                         v-for="(field , i) in JSON.parse(projects.pod.parameters).user_parameters"
                          :key="i">
                        <Label :for="field.name" class="text-right col-span-2">
 
-                            {{  field.title }}
+                            {{ field.title }}
 
                         </Label>
                         <Input :id="field.name" :type="field.type" class="col-span-4"
                                v-model="data2[field.name]"
                                :disabled="field.disable"
-                            />
+                        />
                     </div>
                 </div>
                 <DialogFooter>
@@ -292,14 +338,29 @@ function apply(){
 
                 </CardTitle>
                 <CardDescription class="text-right flex items-center gap-2">
-                    <a :href="'https://' + projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir'"
-                       target="_blank" class="flex gap-2 font-bold text-blue-600 underline">
-
-                        {{
-                            'https://' + projects.namespace.slug + "." + parseJSON(projects.parameters).user_params.app_name + ".podplex.ir"
-                        }}
+                    <a target="_blank"
+                       :class="[
+                                  'underline',
+                                  'disabled',
+                                  groupedCertificates.length > 0 && groupedCertificates.some(c =>
+                                 c.dnsNames && c.dnsNames.includes(projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir') && c.status === 'True')  ? ' ' : 'cursor-wait',
+                                ]"
+                       :href="'https://' + projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir'"
+                    >
+                            <span v-if="(groupedCertificates.length > 0 && groupedCertificates.some(c =>
+                                c.dnsNames && c.dnsNames.includes(projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir') && c.status === 'True'))">
+                                https://
+                            </span>
+                        <span v-else>
+                                http://
+                            </span>
+                        {{ projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir'}}
 
                     </a>
+                    <span v-if="!(groupedCertificates.length > 0 && groupedCertificates.some(c =>
+        c.dnsNames && c.dnsNames.includes(projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir') && c.status === 'True'))"> <LoaderCircle size="12" class="animate-spin" />
+                    </span>
+
                     <Dialog v-model:open="domain_modal">
                         <DialogTrigger as-child>
 
@@ -347,11 +408,29 @@ function apply(){
                     </Dialog>
                     <div v-if="ingress.length > 0" class="flex items-center gap-1">
                         (
-                        <a target="_blank" class="underline"
-                           :href="'https://'+JSON.parse(ingress[ingress.length - 1].resource).user_params.domain">
-                            {{ "https://" + JSON.parse(ingress[ingress.length - 1].resource).user_params.domain }}
+
+
+                        <a target="_blank"
+                           :class="[
+                                  'underline',
+                                  'disabled',
+                                  groupedCertificates.length > 0 && groupedCertificates.some(c =>
+                                 c.dnsNames && c.dnsNames.includes(JSON.parse(ingress[ingress.length - 1]?.resource)?.user_params?.domain) && c.status === 'True')  ? ' ' : 'cursor-wait',
+                                ]"
+                           :href="'https://' + JSON.parse(ingress[ingress.length - 1].resource).user_params.domain"
+                        >
+                            <span v-if="(groupedCertificates.length > 0 && groupedCertificates.some(c =>
+                                c.dnsNames && c.dnsNames.includes(JSON.parse(ingress[ingress.length - 1]?.resource)?.user_params?.domain) && c.status === 'True'))">
+                                https://
+                            </span>
+                            <span v-else>
+                                http://
+                            </span>
+                            {{ JSON.parse(ingress[ingress.length - 1].resource).user_params.domain }}
 
                         </a>
+                        <span v-if="!(groupedCertificates.length > 0 && groupedCertificates.some(c =>
+        c.dnsNames && c.dnsNames.includes(JSON.parse(ingress[ingress.length - 1]?.resource)?.user_params?.domain) && c.status === 'True'))"> <LoaderCircle size="12" class="animate-spin" /> </span>
                         <span>
                               <AlertDialog>
                                 <AlertDialogTrigger as-child>
