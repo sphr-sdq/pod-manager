@@ -41,7 +41,7 @@ class ProjectsController extends Controller
 
         return Inertia::render('Dashboard/User/Project', [
             'bannerTitle' => namespaces::where('slug'  , $slug)->first()->name,
-            'bannerBody' => 'در این قسمت می‌توانید پروژه‌ی خود را مدیریت کنید و برای دیپلوی برنالمه‌ها اقدام کنید',
+            'bannerBody' => 'در این قسمت می‌توانید پروژه‌ی خود را مدیریت کنید و برای دیپلوی برنامه‌ها اقدام کنید',
             'pods' => Pods::all()->select(['name', 'slug', 'image_path']),
             'slug' => namespaces::where('slug'  , $slug)->first()->slug,
             'projects' => Projects::where('namespace_id' , $project->id)->with('namespace')->with('pod')->first()?? [],

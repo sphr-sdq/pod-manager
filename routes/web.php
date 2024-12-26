@@ -17,7 +17,8 @@ use function Termwind\render;
 
 Route::get('/', [\App\Http\Controllers\HomeController::class , 'index'])
         ->name('home');
-
+Route::get('/pods' , [\App\Http\Controllers\HomeController::class , 'index_pods']);
+Route::get('pods/{slog}' , [\App\Http\Controllers\HomeController::class , 'single_pod']);
 //Route::get('/dashboard', function () {
 //    return Inertia::render('Dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');

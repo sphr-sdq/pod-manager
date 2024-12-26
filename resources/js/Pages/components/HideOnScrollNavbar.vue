@@ -6,7 +6,7 @@
 
 
                 <div class="col-span-4 flex items-center">
-                    <img width="50px" height="50px" src="Logo.svg" alt="Logo">
+                    <img width="50px" height="50px" src="/Logo.svg" alt="Logo">
                     <span class="text-2xl">
                        <Link href="/">
                            پاد پلکس
@@ -25,7 +25,7 @@
                                     <ul class=" grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[300px]" >
                                         <li v-for="component in components" :key="component.title" >
                                             <NavigationMenuLink as-child >
-                                                <a
+                                                <Link
                                                     :href="component.href"
                                                     class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                                 >
@@ -36,20 +36,19 @@
                                                     <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
                                                         {{ component.description }}
                                                     </p>
-                                                </a>
+                                                </Link>
                                             </NavigationMenuLink>
                                         </li>
                                     </ul>
                                 </NavigationMenuContent>
                             </NavigationMenuItem>
+
                             <NavigationMenuItem>
-                                <NavigationMenuLink href="/docs/introduction" :class="navigationMenuTriggerStyle()">
-                                    پاد جدید
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            <NavigationMenuItem>
-                                <NavigationMenuLink href="/docs/introduction" :class="navigationMenuTriggerStyle()">
-                                    آموزش
+                                <NavigationMenuLink as-child :class="navigationMenuTriggerStyle()">
+                                    <Link href="/docs/introduction" >
+                                        آموزش
+                                    </Link>
+
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                         </NavigationMenuList>
@@ -99,7 +98,7 @@ import UserNav from '../components/UserNav.vue';
 const components = [
     {
         title: 'همه‌ی پاد‌ها',
-        href: '/docs/components/alert-dialog',
+        href: '/pods',
         description:
             'پاد مورد نظر خود را انتخاب کنید',
     }

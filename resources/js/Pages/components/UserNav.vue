@@ -17,6 +17,13 @@ import {
 } from '@/Components/ui/dropdown-menu'
 
 import {Link} from '@inertiajs/vue3';
+
+defineProps({
+    isDashboard : {
+        type : Boolean,
+        default: false
+    }
+})
 </script>
 
 <template>
@@ -44,8 +51,11 @@ import {Link} from '@inertiajs/vue3';
             <DropdownMenuGroup>
                 <DropdownMenuItem class="flex flex-row-reverse  w-full">
                     <div  class="w-full text-end">
-                        <Link href="/dashboard" class="w-full block">
+                        <Link  v-if="!isDashboard" href="/dashboard" class="w-full block">
                             داشبورد
+                        </Link>
+                        <Link  v-else href="/" class="w-full block">
+                            صفحه‌ی اصلی
                         </Link>
                     </div>
 

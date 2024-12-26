@@ -15,57 +15,25 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //
         return Inertia::render('Home' , [
-            "pods" => Pods::with('tags')->get()
+            "pods" => Pods::with('tags')->get(),
+            "tags" => Tags::all()
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index_pods()
     {
-        //
+        return Inertia::render('Pods' , [
+                "pods" => Pods::with('tags')->get(),
+            ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function single_pod($slug)
     {
-        //
+        $pod = Pods::where('slug' ,'=',$slug)->first();
+        return Inertia::render('SinglePod' , [
+            "pod" => $pod->description
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pods $pods)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Pods $pods)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Pods $pods)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Pods $pods)
-    {
-        //
-    }
 }

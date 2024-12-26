@@ -3,6 +3,8 @@ import UserSidebarNav from "@/Pages/Dashboard/User/Layout/UserSidebarNav.vue";
 import {Separator} from "@/Components/ui/separator"
 import {useToast} from '@/components/ui/toast/use-toast'
 import Toaster from "../../../Components/ui/toast/Toaster.vue";
+import UserNav from '../../components/UserNav.vue';
+
 const { toast } = useToast()
 
 import { provide , readonly, markRaw } from 'vue'
@@ -28,15 +30,21 @@ provideToast ((data) => {
 
 <template>
     <Toaster/>
+
+
         <div class="hidden space-y-6 p-10 pb-16 md:block">
-            <div class="space-y-0.5">
-                <h2 class="text-2xl font-bold tracking-tight">
-                    {{bannerTitle}}
-                </h2>
-                <p class="text-muted-foreground">
-                    {{bannerBody }}
-                </p>
+            <div class="flex justify-between">
+                <div class="space-y-0.5">
+                    <h2 class="text-2xl font-bold tracking-tight">
+                        {{bannerTitle}}
+                    </h2>
+                    <p class="text-muted-foreground">
+                        {{bannerBody }}
+                    </p>
+                </div>
+                <UserNav is-dashboard="true"/>
             </div>
+
             <Separator class="my-6" />
             <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
                 <aside class="mx-4 lg:w-1/5">
@@ -49,5 +57,8 @@ provideToast ((data) => {
                 </div>
             </div>
         </div>
+
+
+
 
 </template>

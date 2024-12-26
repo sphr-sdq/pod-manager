@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('description');
             $table->text('template');
+            $table->text('ingress');
             $table->text('parameters')->nullable();
             $table->timestamps();
         });
