@@ -31,11 +31,11 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 WORKDIR /var/www
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
-
-COPY . /var/www
+# Install Laravel dependencies and generate app key
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN php artisan key:generate
 
 # Install Node dependencies and build Vue/Inertia
 RUN npm install && npm run build
