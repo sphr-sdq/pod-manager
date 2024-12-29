@@ -33,6 +33,8 @@ WORKDIR /var/www
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+RUN composer install --no-dev --optimize-autoloader
+
 COPY . /var/www
 
 # Install Node dependencies and build Vue/Inertia
