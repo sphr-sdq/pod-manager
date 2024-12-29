@@ -39,10 +39,6 @@ COPY . .
 
 FROM builder
 
-# Copy php.ini
-COPY /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-
-
 # Install Laravel dependencies and generate app key
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN php artisan key:generate --show | tee /tmp/app_key && export APP_KEY=$(cat /tmp/app_key)
