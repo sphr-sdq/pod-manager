@@ -1,11 +1,62 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine as builder
 
- # Copy a simple PHP file
- COPY test.php /var/www/html/test.php
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+# Install necessary packages (Alpine)
+RUN apk add --no-cache \
+    build-base \
+    libpng-dev \
+    libzip-dev \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    nodejs \
+    npm \
+    postgresql-dev # PostgreSQL client for Alpine
 
+# Install PHP extensions (Alpine uses apk and different package names)
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    pdo_pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip
 
- # Expose port
- EXPOSE 9000
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
- CMD ["php-fpm"]
+# Set working directory
+WORKDIR /var/www
+
+# Copy project
+COPY . .
+
+# Copy php.ini
+COPY /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+
+FROM builder
+
+# Install Laravel dependencies and generate app key
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN php artisan key:generate --show | tee /tmp/app_key && export APP_KEY=$(cat /tmp/app_key)
+
+# Install Node dependencies and build Vue/Inertia
+RUN npm install && npm run build
+
+# Change ownership
+RUN chown -R www-data:www-data /var/www
+
+# Switch to www-data user
+USER www-data
+
+# Expose port
+EXPOSE 9000
+
+# Command
+CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "9000"]
