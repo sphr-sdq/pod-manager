@@ -36,8 +36,6 @@ WORKDIR /var/www
 
 # Copy project
 COPY . .
-# Copy .env file explicitly
-COPY .env .env
 
 # Install Laravel dependencies and generate app key
 RUN composer install --no-interaction --optimize-autoloader --no-dev
