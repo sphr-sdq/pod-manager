@@ -17,8 +17,9 @@ RUN apt-get update \
         libjpeg62-turbo-dev \
         nodejs \
         npm \
-    && apt-get -f install \ # added to resolve potential conflicts
-    && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip
+    && apt-get -f install \
+    && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip # Corrected line
+
 
 WORKDIR /var/www
 
