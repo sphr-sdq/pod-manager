@@ -20,32 +20,35 @@ class ProjectsController extends Controller
     public function index(Request $request, $slug)
     {
         $project = $request->user()->projects()->where('slug', $slug)->first();
-        ds(Projects::where('namespace_id' , $project->id)->with('namespace')->with('pod')->first());
+
 
 
         if (!$project) {
-            $ingress = collect();
-        } else {
-            $actual_project = Projects::where("namespace_id", $project->id)->get();
+            return Inertia::render('Dashboard/User/Project', [
+                'bannerTitle' => Namespaces::where('slug', $slug)->first()?->name,
+                'bannerBody' => 'در این قسمت می‌توانید پروژه‌ی خود را مدیریت کنید و برای دیپلوی برنامه‌ها اقدام کنید',
+                'pods' => Pods::all()->select(['name', 'slug', 'image_path']),
+                'slug' => Namespaces::where('slug', $slug)->first()?->slug,
+                'projects' => [],
+                "ingress" => collect(),
+            ]);
+        }
 
-            if ($actual_project->isEmpty()) {
-                $project_resource = collect();
+        $actualProject = Projects::where("namespace_id", $project->id)->with('namespace')->with('pod')->first();
 
-            } else {
-                $project_resource = Project_Resources::where("project_id", $actual_project->first()->id)->get();
 
-            }
-
-            $ingress = $project_resource->isEmpty() ? collect() : $project_resource;
+        $project_resource = collect();
+        if ($actualProject) {
+            $project_resource = Project_Resources::where("project_id", $actualProject->id)->get();
         }
 
         return Inertia::render('Dashboard/User/Project', [
-            'bannerTitle' => namespaces::where('slug'  , $slug)->first()->name,
+            'bannerTitle' => Namespaces::where('slug', $slug)->first()?->name,
             'bannerBody' => 'در این قسمت می‌توانید پروژه‌ی خود را مدیریت کنید و برای دیپلوی برنامه‌ها اقدام کنید',
             'pods' => Pods::all()->select(['name', 'slug', 'image_path']),
-            'slug' => namespaces::where('slug'  , $slug)->first()->slug,
-            'projects' => Projects::where('namespace_id' , $project->id)->with('namespace')->with('pod')->first()?? [],
-            "ingress" =>  $ingress->isEmpty() ? collect() : $ingress ,
+            'slug' => Namespaces::where('slug'  , $slug)->first()?->slug,
+            'projects' => $actualProject ?? [],
+            "ingress" => $project_resource->isEmpty() ? collect() : $project_resource ,
 
         ]);
     }
