@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine AS builder
+FROM php:8.3-fpm-alpine AS builder
 
 # Install necessary packages (Alpine)
 RUN apk add --no-cache \
