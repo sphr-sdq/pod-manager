@@ -8,7 +8,9 @@ use App\Models\Pods;
 use App\Models\Project_Resources;
 use App\Models\Projects;
 use http\Client\Curl\User;
+use HttpException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
@@ -66,44 +68,49 @@ class ProjectsController extends Controller
      */
     public function store(Request $request, $slug)
     {
-        $res = $request->request->all();
-        ds(json_encode($res));
+        try {
+            $res = $request->request->all();
+            ds(json_encode($res));
 
-        // Check for app_id and user_namespace in the request.
-        if (!isset($res['app_id']) || !isset($res['user_namespace'])) {
-            throw new \Exception('Missing app_id or user_namespace parameters.');
+            // Check for app_id and user_namespace in the request.
+            if (!isset($res['app_id']) || !isset($res['user_namespace'])) {
+                throw new HttpException(400, 'Missing app_id or user_namespace parameters.');
+            }
+
+
+            // Retrieve the namespace and the pod model, or return null if it does not exist.
+            $namespace = Namespaces::where("slug", "=", $res["user_namespace"])->first();
+            if(!$namespace)  {
+                throw new HttpException(404, 'Namespace with that slug was not found.');
+            }
+            $pod = Pods::where("slug", "=", $res["app_id"])->first();
+            if(!$pod) {
+                throw new HttpException(404, 'Pod with that slug was not found.');
+            }
+            DB::beginTransaction();
+            Projects::create([
+                "user_id" => $request->user()->id,
+                "namespace_id" => $namespace->id,
+                "pod_id" => $pod->id,
+                "parameters" => json_encode($res)
+            ]);
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post('http://go-app:8080/deploy', $res);
+
+            if (!$response->successful()) {
+                throw new HttpException(502, 'Failed to create Kubernetes namespace: ' . $response->body());
+            }
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Inertia::render('Dashboard/User/Project', [
+                'errors' =>  [$e->getMessage()],
+            ], $e->getCode() ?: 500);
         }
-
-
-        // Retrieve the namespace and the pod model, or return null if it does not exist.
-        $namespace = Namespaces::where("slug", "=", $res["user_namespace"])->first();
-        if(!$namespace)  {
-            throw new \Exception('Namespace with that slug was not found.');
-        }
-        $pod = Pods::where("slug", "=", $res["app_id"])->first();
-        if(!$pod) {
-            throw new \Exception('Pod with that slug was not found.');
-        }
-
-        // Create the new project
-        Projects::create([
-            "user_id" => $request->user()->id,
-            "namespace_id" => $namespace->id,
-            "pod_id" => $pod->id,
-            "parameters" => json_encode($res)
-        ]);
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-        ])->post('http://go-app:8080/deploy', $res);
-
-        if (!$response->successful()) {
-            throw new \Exception('Failed to create Kubernetes namespace: ' . $response->body());
-        }
-
         return redirect()->back();
     }
-
     public function store_domain(Request $request)
     {
 
