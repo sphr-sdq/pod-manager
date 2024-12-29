@@ -28,9 +28,13 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     gd \
     zip
 
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
 WORKDIR /var/www
 
-# Install Composer
+# Copy project
 COPY . .
 
 # Install Laravel dependencies and generate app key
@@ -40,11 +44,14 @@ RUN php artisan key:generate
 # Install Node dependencies and build Vue/Inertia
 RUN npm install && npm run build
 
-# Set correct permissions (important for Alpine)
+# Change ownership
 RUN chown -R www-data:www-data /var/www
 
+# Switch to www-data user
 USER www-data
 
+# Expose port
 EXPOSE 9000
 
+# Command
 CMD ["php-fpm"]
