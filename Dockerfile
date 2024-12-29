@@ -1,43 +1,48 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
-# Install system dependencies
-RUN apt-get update \
-    && apt-get -y dist-upgrade \
-    && apt-get install -y \
-        build-essential \
-        libpng-dev \
-        libonig-dev \
-        libxml2-dev \
-        zip \
-        unzip \
-        git \
-        curl \
-        libzip-dev \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        nodejs \
-        npm \
-    && apt-get -f install \
-    && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip # Corrected line
+# Install necessary packages (Alpine)
+RUN apk add --no-cache \
+    build-base \
+    libpng-dev \
+    libzip-dev \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    nodejs \
+    npm \
+    postgresql-dev # PostgreSQL client for Alpine
 
+# Install PHP extensions (Alpine uses apk and different package names)
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    pdo_pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip
 
 WORKDIR /var/www
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy application code
 COPY . /var/www
 
 # Install Node dependencies and build Vue/Inertia
 RUN npm install && npm run build
 
-# Set correct permissions
+# Set correct permissions (important for Alpine)
 RUN chown -R www-data:www-data /var/www
 
 USER www-data
 
-# Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
 CMD ["php-fpm"]
