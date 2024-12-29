@@ -1,21 +1,23 @@
 FROM php:8.2-fpm
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    libzip-dev \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    nodejs \
-    npm \
+RUN apt-get update \
+    && apt-get -y dist-upgrade \
+    && apt-get install -y \
+        build-essential \
+        libpng-dev \
+        libonig-dev \
+        libxml2-dev \
+        zip \
+        unzip \
+        git \
+        curl \
+        libzip-dev \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        nodejs \
+        npm \
+    && apt-get -f install \ # added to resolve potential conflicts
     && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip
 
 WORKDIR /var/www
