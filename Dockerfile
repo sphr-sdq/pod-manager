@@ -37,10 +37,11 @@ WORKDIR /var/www
 # Copy project
 COPY . .
 
+FROM builder
+
 # Copy php.ini
 COPY /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
-FROM builder
 
 # Install Laravel dependencies and generate app key
 RUN composer install --no-interaction --optimize-autoloader --no-dev
