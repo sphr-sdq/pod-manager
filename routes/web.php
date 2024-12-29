@@ -19,6 +19,8 @@ Route::get('/', [\App\Http\Controllers\HomeController::class , 'index'])
         ->name('home');
 Route::get('/pods' , [\App\Http\Controllers\HomeController::class , 'index_pods']);
 Route::get('pods/{slog}' , [\App\Http\Controllers\HomeController::class , 'single_pod']);
+
+Route::get('/health', [\App\Http\Controllers\HealthController::class, 'health']);
 //Route::get('/dashboard', function () {
 //    return Inertia::render('Dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');
