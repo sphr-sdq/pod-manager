@@ -95,7 +95,7 @@ class ProjectsController extends Controller
             ]);
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post(env('GO_APP_URL', 'http://go-app:8080').'/deploy', $res);
+            ])->post('http://go-app:8080/deploy', $res);
 
             if (!$response->successful()) {
                 throw new HttpException(502, 'Failed to create Kubernetes namespace: ' . $response->body());
