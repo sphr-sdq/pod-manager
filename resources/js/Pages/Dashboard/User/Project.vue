@@ -348,13 +348,8 @@ function apply() {
                        :href="'https://' + projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir'"
                     >
                             <span v-if="(groupedCertificates.length > 0 && groupedCertificates.some(c =>
-                                c.dnsNames && c.dnsNames.includes(projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir') && c.status === 'True'))">
-                                https://
-                            </span>
-                        <span v-else>
-                                http://
-                            </span>
-                        {{ projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir'}}
+                                c.dnsNames && c.dnsNames.includes(projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir') && c.status === 'True'))">https://</span>
+                        <span v-else>http://</span>{{projects.namespace.slug +'.' +parseJSON(projects.parameters).user_params.app_name + '.podplex.ir'}}
 
                     </a>
                     <span v-if="!(groupedCertificates.length > 0 && groupedCertificates.some(c =>
@@ -420,13 +415,8 @@ function apply() {
                            :href="'https://' + JSON.parse(ingress[ingress.length - 1].resource).user_params.domain"
                         >
                             <span v-if="(groupedCertificates.length > 0 && groupedCertificates.some(c =>
-                                c.dnsNames && c.dnsNames.includes(JSON.parse(ingress[ingress.length - 1]?.resource)?.user_params?.domain) && c.status === 'True'))">
-                                https://
-                            </span>
-                            <span v-else>
-                                http://
-                            </span>
-                            {{ JSON.parse(ingress[ingress.length - 1].resource).user_params.domain }}
+                                c.dnsNames && c.dnsNames.includes(JSON.parse(ingress[ingress.length - 1]?.resource)?.user_params?.domain) && c.status === 'True'))">https://</span>
+                            <span v-else>http://</span>{{JSON.parse(ingress[ingress.length - 1].resource).user_params.domain }}
 
                         </a>
                         <span v-if="!(groupedCertificates.length > 0 && groupedCertificates.some(c =>
