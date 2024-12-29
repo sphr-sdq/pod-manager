@@ -11,7 +11,7 @@ import {
     DrawerPortal,
     DrawerTrigger
 
-} from '@/components/ui/drawer'
+} from '@/Components/ui/drawer'
 import {PerfectScrollbar} from "vue3-perfect-scrollbar";
 </script>
 

@@ -1,7 +1,7 @@
 <script setup>
 import AdminSidebarNav from "@/Pages/Dashboard/Admin/Layout/AdminSidebarNav.vue";
 import {Separator} from "@/Components/ui/separator"
-import {useToast} from '@/components/ui/toast/use-toast'
+import {useToast} from '@/Components/ui/toast/use-toast.js'
 import Toaster from "../../../Components/ui/toast/Toaster.vue";
 const { toast } = useToast()
 

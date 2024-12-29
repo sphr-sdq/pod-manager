@@ -7,15 +7,15 @@ export default {
 </script>
 
 <script setup>
-import {Separator} from '@/components/ui/separator'
+import {Separator} from '@/Components/ui/separator'
 import {
     Card,
     CardHeader,
     CardTitle,
     CardDescription,
     CardContent
-} from '@/components/ui/card'
-import {Button} from '@/components/ui/button'
+} from '@/Components/ui/card'
+import {Button} from '@/Components/ui/button'
 import {
     Dialog,
     DialogContent,
@@ -24,10 +24,10 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog'
-import {Input} from '@/components/ui/input'
+} from '@/Components/ui/dialog'
+import {Input} from '@/Components/ui/input'
 import {Github} from 'lucide-vue-next';
-import {Label} from '@/components/ui/label'
+import {Label} from '@/Components/ui/label'
 import {ref, reactive, onMounted} from 'vue'
 import {router} from '@inertiajs/vue3'
 import axios from "axios";
@@ -47,7 +47,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from '@/Components/ui/alert-dialog'
 
 import Projects from "@/Pages/Dashboard/User/Projects.vue";
 import {object} from "zod";

@@ -8,11 +8,11 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card'
+} from '@/Components/ui/card'
 import {Button} from "@/Components/ui/button";
 import UserAuthForm from "@/Pages/components/UserAuthForm.vue";
 import {ref} from "vue";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
 import {Link} from "@inertiajs/vue3"
 
 

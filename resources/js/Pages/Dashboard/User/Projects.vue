@@ -6,7 +6,7 @@ export default {
 </script>
 
 <script setup >
-import { Button } from '@/components/ui/button'
+import { Button } from '@/Components/ui/button'
 import {
     Dialog,
     DialogClose,
@@ -16,14 +16,14 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/Components/ui/dialog'
 import {
     Card,
     CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card'
+} from '@/Components/ui/card'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -34,10 +34,10 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from '@/Components/ui/alert-dialog'
 import { Trash2 } from 'lucide-vue-next';
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
 import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'

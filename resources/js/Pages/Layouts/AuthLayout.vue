@@ -1,5 +1,5 @@
 <script setup lang="js">
-import {Button} from '@/components/ui/button'
+import {Button} from '@/Components/ui/button'
 import House from "~icons/lucide/House"
 import { router } from '@inertiajs/vue3'
 </script>

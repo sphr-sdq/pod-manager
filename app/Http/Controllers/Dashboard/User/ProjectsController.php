@@ -74,7 +74,7 @@ class ProjectsController extends Controller
         ]);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post('http://localhost:8080/deploy', $res);
+        ])->post('http://go-app.podplex.svc.cluster.local:8080/deploy', $res);
 
         if (!$response->successful()) {
             throw new \Exception('Failed to create Kubernetes namespace: ' . $response->body());
@@ -102,7 +102,7 @@ class ProjectsController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post('http://localhost:8080/ingress', $data);
+        ])->post('http://go-app.podplex.svc.cluster.local:8080/ingress', $data);
 
         if (!$response->successful()) {
             throw new \Exception('Failed to create domain: ' . $response->body());
@@ -123,7 +123,7 @@ class ProjectsController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post('http://localhost:8080/delete_ingress', json_decode($ingress->resource));
+        ])->post('http://go-app.podplex.svc.cluster.local:8080/delete_ingress', json_decode($ingress->resource));
 
         if (!$response->successful()) {
             throw new \Exception('Failed to create domain: ' . $response->body());
@@ -151,7 +151,7 @@ class ProjectsController extends Controller
         $project->save();
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post('http://localhost:8080/update', $data);
+        ])->post('http://go-app.podplex.svc.cluster.local:8080/update', $data);
 
         if (!$response->successful()) {
             throw new \Exception('Failed to update resources: ' . $response->body());
@@ -161,7 +161,7 @@ class ProjectsController extends Controller
     public function certificate($slug){
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->get("http://localhost:8080/certificates", [
+        ])->get("http://go-app.podplex.svc.cluster.local:8080/certificates", [
             'namespace' => $slug,
         ]);
         if ($response->successful()) {

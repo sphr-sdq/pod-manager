@@ -90,8 +90,8 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu'
-import { Button } from '@/components/ui/button'
+} from '@/Components/ui/navigation-menu'
+import { Button } from '@/Components/ui/button'
 import { router } from '@inertiajs/vue3'
 
 import UserNav from '../components/UserNav.vue';

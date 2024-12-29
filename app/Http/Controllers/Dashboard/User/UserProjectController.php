@@ -67,7 +67,7 @@ class UserProjectController extends Controller
     }
     private function createKubernetesNamespace($slug)
     {
-        $response = Http::post('localhost:8080/create-namespace', [
+        $response = Http::post('http://go-app.podplex.svc.cluster.local:8080/create-namespace', [
             'Name' => $slug
         ]);
 
@@ -88,7 +88,7 @@ class UserProjectController extends Controller
 
     private function deleteKubernetesNamespace($slug)
     {
-        $response = Http::post('localhost:8080/delete-namespace', [
+        $response = Http::post('http://go-app.podplex.svc.cluster.local:8080/delete-namespace', [
             'Name' => $slug
         ]);
 

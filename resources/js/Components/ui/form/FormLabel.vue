@@ -1,7 +1,7 @@
 <script setup>
 import { useFormField } from "./useFormField";
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/Components/ui/label";
 
 const props = defineProps({
   for: { type: String, required: false },

@@ -4,8 +4,8 @@ import {
     PinInputGroup,
     PinInputInput,
     PinInputSeparator,
-} from '@/components/ui/pin-input'
-import {Button} from '@/components/ui/button'
+} from '@/Components/ui/pin-input'
+import {Button} from '@/Components/ui/button'
 import {
     Stepper,
     StepperDescription,
@@ -13,12 +13,12 @@ import {
     StepperSeparator,
     StepperTitle,
     StepperTrigger
-} from '@/components/ui/stepper'
+} from '@/Components/ui/stepper'
 import {Check, Circle, Dot, Phone, LockKeyhole, MessageSquare, LoaderCircle} from 'lucide-vue-next'
 import {onMounted, reactive, ref} from 'vue'
 import {Label} from "@/Components/ui/label/index.js";
 import {Input} from "@/Components/ui/input/index.js";
-import {Separator} from '@/components/ui/separator'
+import {Separator} from '@/Components/ui/separator'
 import {Link, router, useForm} from "@inertiajs/vue3";
 import Drawer from "../components/DemoDrawer.vue"
 import {useOtpState} from '@/composables/useOtpState'

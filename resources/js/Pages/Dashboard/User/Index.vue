@@ -1,9 +1,9 @@
 <script setup>
 import UserSidebarNav from "@/Pages/Dashboard/User/Layout/UserSidebarNav.vue";
 import {Separator} from "@/Components/ui/separator"
-import {useToast} from '@/components/ui/toast/use-toast'
+import {useToast} from '@/Components/ui/toast/use-toast'
 import Toaster from "../../../Components/ui/toast/Toaster.vue";
-import UserNav from '../../components/UserNav.vue';
+import UserNav from '@/Pages/components/UserNav.vue';
 
 const { toast } = useToast()
 
