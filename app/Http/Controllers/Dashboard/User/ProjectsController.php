@@ -70,7 +70,6 @@ class ProjectsController extends Controller
     {
         try {
             $res = $request->request->all();
-            ds(json_encode($res));
 
             // Check for app_id and user_namespace in the request.
             if (!isset($res['app_id']) || !isset($res['user_namespace'])) {
@@ -96,7 +95,7 @@ class ProjectsController extends Controller
             ]);
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post('http://go-app:8080/deploy', $res);
+            ])->post(env('GO_APP_URL', 'http://go-app:8080').'/deploy', $res);
 
             if (!$response->successful()) {
                 throw new HttpException(502, 'Failed to create Kubernetes namespace: ' . $response->body());
