@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-fpm-alpine as builder
 
 # Install necessary packages (Alpine)
 RUN apk add --no-cache \
@@ -37,8 +37,11 @@ WORKDIR /var/www
 # Copy project
 COPY . .
 
+
+FROM builder
+
 # COPY php ini
-COPY /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+COPY --from=builder /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 # Install Laravel dependencies and generate app key
 RUN composer install --no-interaction --optimize-autoloader --no-dev
